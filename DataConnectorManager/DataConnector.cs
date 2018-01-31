@@ -31,11 +31,18 @@ namespace DataConnectorManager
         Access_ACE_OLEDB12_StandardSecurity,
         /// <summary>
         /// Encrypted Connection to Access using ACE.OLEDB.12.0 as Provider. Parameters to be set: FilePath, Password, [Provider = Microsoft.ACE.OLEDB.12.0].
-        /// NOTE: Only works with LEGACY ENCRYPTION METHOD.
+        /// NOTE: Works with LEGACY ENCRYPTION METHOD only.
         /// </summary>
         Access_ACE_OLEDB12_WithPassword,
 
+        /// <summary>
+        /// Standard Connection to Access using JET.OLEDB.4.0 as Provider. Parameters to be set: FilePath, [Provider = Microsoft.JET.OLEDB.4.0], [UserId = admin], [Password = NULL]
+        /// </summary>
         Access_JET_OLEDB4_StandardSecurity,
+        /// <summary>
+        /// Encrypted Connection to Access using JET.OLEDB.4.0 as Provider. Parameters to be set: FilePath, Password, [Provider = Microsoft.JET.OLEDB.4.0]
+        /// NOTE: Works with LEGACY ENCRYPTION METHOD AND DEFAULT ENCRYPTION METHOD.
+        /// </summary>
         Access_JET_OLEDB4_WithPassword
     }
     /// <summary>
@@ -69,7 +76,7 @@ namespace DataConnectorManager
         // Methods to set up for each DataConnectionType
         private void Shortcuts()
         {
-            SetConnectionString(DbStoredParameters, 0); // SQL (3) ACCESS (2)
+            SetConnectionString(DbStoredParameters, 0); // SQL (3) ACCESS (4)
             ConnectToDatabase(DbStoredParameters);      // SQL (3) ACCESS (2)
             BuildCommand(DbStoredParameters);           // SQL (3) ACCESS (2)
             ExecuteReader(DbStoredParameters);          // SQL (3) ACCESS (2)
@@ -115,6 +122,16 @@ namespace DataConnectorManager
                     break;
                 case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
                     dbParameters.Provider = "Microsoft.ACE.OLEDB.12.0";
+                    connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};Jet OLEDB:Database Password={dbParameters.Password};";
+                    break;
+                case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
+                    dbParameters.Provider   = "Microsoft.Jet.OLEDB.4.0";
+                    dbParameters.UserId     = "admin";
+                    dbParameters.Password   = "";
+                    connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};User Id={dbParameters.UserId};Password={dbParameters.Password};";
+                    break;
+                case DataConnectionType.Access_JET_OLEDB4_WithPassword:
+                    dbParameters.Provider = "Microsoft.Jet.OLEDB.4.0";
                     connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};Jet OLEDB:Database Password={dbParameters.Password};";
                     break;
                 default:
@@ -193,6 +210,8 @@ namespace DataConnectorManager
                     break;
                 case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
                 case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
+                case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
+                case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     Access.ConnectToDatabase(dbParameters);
                     break;
                 default:
@@ -391,6 +410,8 @@ namespace DataConnectorManager
 
                 case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
                 case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
+                case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
+                case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     returnValue = Access.BuildCommand(dbParameters);
                     break;
 
@@ -443,6 +464,8 @@ namespace DataConnectorManager
 
                 case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
                 case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
+                case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
+                case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     returnValue = Access.ExecuteReader(dbParameters);
                     break;
 
@@ -497,6 +520,8 @@ namespace DataConnectorManager
 
                 case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
                 case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
+                case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
+                case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     returnValue = Access.ExecuteNonQuery(dbParameters);
                     break;
 
@@ -550,6 +575,8 @@ namespace DataConnectorManager
                     break;
                 case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
                 case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
+                case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
+                case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     returnValue = Access.ExecuteScalar(dbParameters);
                     break;
                 default:

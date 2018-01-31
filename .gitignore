@@ -207,6 +207,7 @@ FakesAssemblies/
 *.opt
 
 # LightSwitch generated files
+HowToUse.txt
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
