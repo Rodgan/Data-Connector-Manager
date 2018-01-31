@@ -1,0 +1,36 @@
+﻿using DataConnectorManager;
+
+DataConnector Connector = new DataConnector();
+DatabaseConnectionParameters DbParameters	= new DatabaseConnectionParameters();
+DatabaseConnectionType DbConnectionType		= DatabaseConnectionType.SQLServer_StandardSecurity;
+
+// SQLServer_StandardSecurity
+DbParameters.Server		= "ServerAddress";
+DbParameters.Database	= "DatabaseName";
+DbParameters.UserId		= "Username";
+DbParameters.Password	= "Password";
+
+// SetConnectionString() method returns Connection String
+// Connection String will also be stored in DbParameters.ConnectionString.
+// If storeDatabaseConnectionParameters is TRUE, DatabaseConnectionParameters will be stored in the DataConnector class instance
+bool storeDatabaseConnectionParameters = false;
+string ConnectionString = Connector.SetConnectionString(DbParameters, DbConnectionType, storeDatabaseConnectionParameters);
+
+// Returns TRUE if connection succeeds
+// Returns FALSE if connection fails
+Connector.ConnectToDatabase(DbParameters);
+
+// SetConnectionString() method can be avoided by passing DbParameters and DbConnectionType to ConnectoToDabase() method
+// Connector.ConnectToDatabase(DbParameters, DbConnectionType);
+
+// Execute a SINGLE query. This query will be executed only once.
+// To build a "multiple query" use the BuildQuery() method
+// Obviously parameters can be set directly in query string
+SQLParameter[] queryParameters	= new SQLParameter[]{ new SQLParameter("@MyParameter", value) };
+string queryString				= "SELECT * FROM MyTable WHRE Column = @MyParameter";
+Connector.SetQueryParameters(DbParameters, queryParameters);
+
+// DatabaseConnectionParameters can be omitted in Connector.ExecuteQuery() parameters, if it has been stored when SetConnectionString() has been called
+DataTable tmpTable			= new DataTable();
+SQLDataReader dataReader	= (SqlDataReader) Connector.ExecuteQuery(DbParameters, queryString);
+tmpTable.Load(dataReader);
