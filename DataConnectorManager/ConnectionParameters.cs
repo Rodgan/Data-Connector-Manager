@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using System.Data.OleDb;
+using MySql.Data.MySqlClient;
 
 namespace DataConnectorManager
 {
@@ -43,7 +44,6 @@ namespace DataConnectorManager
         public string   Password;
         public bool     TrustedConnection;
 
-        public string   IPAddress;
         public int      Port;
         public string   NetworkLibrary;
 
@@ -61,7 +61,6 @@ namespace DataConnectorManager
             Database        = "";
             UserId          = "";
             Password        = "";
-            IPAddress       = "";
             NetworkLibrary  = "";
             MultipleActiveResultSets = false;
             TrustedConnection        = false;
@@ -72,6 +71,7 @@ namespace DataConnectorManager
         #region Connectors
         public SqlConnection SQLConnection;
         public OleDbConnection OLEDBConnection;
+        public MySqlConnection MySQLConnection;
         #endregion
     }
 }

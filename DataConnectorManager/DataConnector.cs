@@ -21,7 +21,7 @@ namespace DataConnectorManager
         /// </summary>
         SQLServer_TrustedConnection,
         /// <summary>
-        /// Standard Connection to SQL Server. Parameters to be set: IPAddress, Port, Database, UserId, Password, [NetworkCatalog = DBMSSOCN]
+        /// Standard Connection to SQL Server. Parameters to be set: Server, Port, Database, UserId, Password, [NetworkCatalog = DBMSSOCN]
         /// </summary>
         SQLServer_StandardSecurity_UseIpAddressAndPort,
 
@@ -43,7 +43,16 @@ namespace DataConnectorManager
         /// Encrypted Connection to Access using JET.OLEDB.4.0 as Provider. Parameters to be set: FilePath, Password, [Provider = Microsoft.JET.OLEDB.4.0]
         /// NOTE: Works with LEGACY ENCRYPTION METHOD AND DEFAULT ENCRYPTION METHOD.
         /// </summary>
-        Access_JET_OLEDB4_WithPassword
+        Access_JET_OLEDB4_WithPassword,
+
+        /// <summary>
+        /// Standard Connection to MySQL. Parameters to be set: Server, Database, UserId, Password
+        /// </summary>
+        MySQL_StandardConnection,
+        /// <summary>
+        /// Standard Connection to MySQL. Parameters to be set: Server, Port, Database, UserId, Password
+        /// </summary>
+        MySQL_ServerAndPortConnection
     }
     /// <summary>
     /// Used to determine which command will be built
@@ -76,12 +85,12 @@ namespace DataConnectorManager
         // Methods to set up for each DataConnectionType
         private void Shortcuts()
         {
-            SetConnectionString(DbStoredParameters, 0); // SQL (3) ACCESS (4)
-            ConnectToDatabase(DbStoredParameters);      // SQL (3) ACCESS (2)
-            BuildCommand(DbStoredParameters);           // SQL (3) ACCESS (2)
-            ExecuteReader(DbStoredParameters);          // SQL (3) ACCESS (2)
-            ExecuteNonQuery(DbStoredParameters);        // SQL (3) ACCESS (2)
-            ExecuteScalar(DbStoredParameters);          // SQL (3) ACCESS (2)
+            SetConnectionString(DbStoredParameters, 0); // SQL (3) ACCESS (4) MYSQL (2)
+            ConnectToDatabase(DbStoredParameters);      // SQL (3) ACCESS (4) MYSQL (2)
+            BuildCommand(DbStoredParameters);           // SQL (3) ACCESS (4) MYSQL (0)
+            ExecuteReader(DbStoredParameters);          // SQL (3) ACCESS (4) MYSQL (2)
+            ExecuteNonQuery(DbStoredParameters);        // SQL (3) ACCESS (4) MYSQL (2)
+            ExecuteScalar(DbStoredParameters);          // SQL (3) ACCESS (4) MYSQL (2)
         }
         // REMOVE BEFORE PUBLISH
 
@@ -113,7 +122,7 @@ namespace DataConnectorManager
                     break;
                 case DataConnectionType.SQLServer_StandardSecurity_UseIpAddressAndPort:
                     dbParameters.NetworkLibrary = "DBMSSOCN";
-                    connectionString = $"Data Source={dbParameters.IPAddress},{dbParameters.Port};Network Library={dbParameters.NetworkLibrary};Initial Catalog={dbParameters.Database};User ID={dbParameters.UserId};Password = {dbParameters.Password};";
+                    connectionString = $"Data Source={dbParameters.Server},{dbParameters.Port};Network Library={dbParameters.NetworkLibrary};Initial Catalog={dbParameters.Database};User ID={dbParameters.UserId};Password = {dbParameters.Password};";
                     break;
                 case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
                     dbParameters.Provider = "Microsoft.ACE.OLEDB.12.0";
@@ -133,6 +142,12 @@ namespace DataConnectorManager
                 case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     dbParameters.Provider = "Microsoft.Jet.OLEDB.4.0";
                     connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};Jet OLEDB:Database Password={dbParameters.Password};";
+                    break;
+                case DataConnectionType.MySQL_StandardConnection:
+                    connectionString = $"Server={dbParameters.Server};Database={dbParameters.Database};Uid={dbParameters.UserId};Pwd={dbParameters.Password};";
+                    break;
+                case DataConnectionType.MySQL_ServerAndPortConnection:
+                    connectionString = $"Server={dbParameters.Server};Port={dbParameters.Port};Database={dbParameters.Database};Uid={dbParameters.UserId};Pwd={dbParameters.Password};";
                     break;
                 default:
                     connectionString = "";
@@ -213,6 +228,10 @@ namespace DataConnectorManager
                 case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
                 case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     Access.ConnectToDatabase(dbParameters);
+                    break;
+                case DataConnectionType.MySQL_StandardConnection:
+                case DataConnectionType.MySQL_ServerAndPortConnection:
+                    MySQL.ConnectToDatabase(dbParameters);
                     break;
                 default:
                     dbParameters.LastCommandSucceeded = false;
@@ -388,6 +407,7 @@ namespace DataConnectorManager
         }
         #endregion
 
+        #region Main Methods
         /// <summary>
         /// Build INSERT, UPDATE, DELETE queries
         /// </summary>
@@ -413,6 +433,11 @@ namespace DataConnectorManager
                 case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
                 case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     returnValue = Access.BuildCommand(dbParameters);
+                    break;
+
+                case DataConnectionType.MySQL_StandardConnection:
+                case DataConnectionType.MySQL_ServerAndPortConnection:
+                    returnValue = MySQL.BuildCommand(dbParameters);
                     break;
 
                 default:
@@ -467,6 +492,11 @@ namespace DataConnectorManager
                 case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
                 case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     returnValue = Access.ExecuteReader(dbParameters);
+                    break;
+
+                case DataConnectionType.MySQL_StandardConnection:
+                case DataConnectionType.MySQL_ServerAndPortConnection:
+                    returnValue = MySQL.ExecuteReader(dbParameters);
                     break;
 
                 default:
@@ -525,6 +555,11 @@ namespace DataConnectorManager
                     returnValue = Access.ExecuteNonQuery(dbParameters);
                     break;
 
+                case DataConnectionType.MySQL_StandardConnection:
+                case DataConnectionType.MySQL_ServerAndPortConnection:
+                    returnValue = MySQL.ExecuteNonQuery(dbParameters);
+                    break;
+
                 default:
                     break;
             }
@@ -579,6 +614,11 @@ namespace DataConnectorManager
                 case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     returnValue = Access.ExecuteScalar(dbParameters);
                     break;
+
+                case DataConnectionType.MySQL_StandardConnection:
+                case DataConnectionType.MySQL_ServerAndPortConnection:
+                    returnValue = MySQL.ExecuteScalar(dbParameters);
+                    break;
                 default:
                     break;
             }
@@ -596,6 +636,7 @@ namespace DataConnectorManager
             DbStoredParameters.QueryString = query;
             return ExecuteScalar(DbStoredParameters);
         }
+        #endregion
 
         #region Shortcuts
         /// <summary>
@@ -1055,6 +1096,7 @@ namespace DataConnectorManager
         }
         #endregion
 
+        #region Build Commands
         /// <summary>
         /// Build INSERT command
         /// </summary>
@@ -1418,5 +1460,7 @@ namespace DataConnectorManager
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
             return BuildDeleteCommand(DbStoredParameters);
         }
+        #endregion
+
     }
 }
