@@ -179,6 +179,24 @@ namespace DataConnectorManager
             }
 
         }
+
+        /// <summary>
+        /// Check if connection is open
+        /// </summary>
+        /// <param name="dbParameters">Connection Parameters</param>
+        /// <returns>Returns TRUE if connection is open</returns>
+        public static bool IsOpen(DatabaseConnectionParameters dbParameters)
+        {
+            try
+            {
+                return (dbParameters.OLEDBConnection.State == ConnectionState.Open);
+            }
+            catch (Exception excp)
+            {
+                Logs.AddException(excp);
+                return false;
+            }
+        }
     }
 
     class Access : OleDb { }

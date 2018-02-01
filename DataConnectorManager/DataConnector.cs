@@ -77,7 +77,7 @@ namespace DataConnectorManager
     }
 
     /// <summary>
-    /// Connect and run queries on SQL, Access, Excel, Oracle, MySQL with a single command
+    /// Connect and run queries on SQL, Access and MySQL with a single command
     /// </summary>
     public class DataConnector
     {
@@ -87,6 +87,7 @@ namespace DataConnectorManager
         {
             SetConnectionString(DbStoredParameters, 0); // SQL (3) ACCESS (4) MYSQL (2)
             ConnectToDatabase(DbStoredParameters);      // SQL (3) ACCESS (4) MYSQL (2)
+            IsOpen(DbStoredParameters);                 // SQL (3) ACCESS (4) MYSQL (2)
             BuildCommand(DbStoredParameters);           // SQL (3) ACCESS (4) MYSQL (0)
             ExecuteReader(DbStoredParameters);          // SQL (3) ACCESS (4) MYSQL (2)
             ExecuteNonQuery(DbStoredParameters);        // SQL (3) ACCESS (4) MYSQL (2)
@@ -195,6 +196,55 @@ namespace DataConnectorManager
                 return DbStoredParameters.LastCommandSucceeded;
             else
                 throw new Exception("There are no stored DatabaseConnectionParameters");
+        }
+
+        /// <summary>
+        /// Get the message of the latest exception
+        /// </summary>
+        public string LastException
+        {
+            get
+            {
+                return Logs.GetLastException().Message;
+            }
+        }
+
+        /// <summary>
+        /// Check if connection is open
+        /// </summary>
+        /// <param name="dbParameters">Connection Parameters</param>
+        /// <returns>Returns TRUE if connection is open</returns>
+        public bool IsOpen(DatabaseConnectionParameters dbParameters)
+        {
+            switch (dbParameters.ConnectionType)
+            {
+                case DataConnectionType.SQLServer_StandardSecurity:
+                case DataConnectionType.SQLServer_TrustedConnection:
+                case DataConnectionType.SQLServer_StandardSecurity_UseIpAddressAndPort:
+                    return SQLServer.IsOpen(dbParameters);
+
+                case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
+                case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
+                case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
+                case DataConnectionType.Access_JET_OLEDB4_WithPassword:
+                    return Access.IsOpen(dbParameters);
+
+                case DataConnectionType.MySQL_StandardConnection:
+                case DataConnectionType.MySQL_ServerAndPortConnection:
+                    return MySQL.IsOpen(dbParameters);
+
+                default:
+                    return false;
+            }
+        }
+        /// <summary>
+        /// Check if connection is open - Only Stored DatabaseConnectionParameters
+        /// </summary>
+        /// <param name="dbParameters">Connection Parameters</param>
+        /// <returns>Returns TRUE if connection is open</returns>
+        public bool IsOpen()
+        {
+            return IsOpen(DbStoredParameters);
         }
 
         /// <summary>

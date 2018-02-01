@@ -55,7 +55,7 @@ namespace DataConnectorManager
         /// </summary>
         public void ResetParameters()
         {
-            FilePath      = "";
+            FilePath        = "";
             Provider        = "";
             Server          = "";
             Database        = "";
