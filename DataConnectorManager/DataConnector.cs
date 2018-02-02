@@ -115,15 +115,15 @@ namespace DataConnectorManager
             switch (dbConnectionType)
             {
                 case DataConnectionType.SQLServer_StandardSecurity:
-                    connectionString = $"Server={dbParameters.Server};Database={dbParameters.Database};User Id={dbParameters.UserId};Password={dbParameters.Password};";
+                    connectionString = $"Server={dbParameters.Server};Database={dbParameters.Database};User Id={dbParameters.UserId};Password={dbParameters.Password};Connection Timeout={dbParameters.ConnectionTimeout};";
                     break;
                 case DataConnectionType.SQLServer_TrustedConnection:
                     dbParameters.TrustedConnection = true;
-                    connectionString = $"Server={dbParameters.Server};Database={dbParameters.Database};Trusted_Connection={dbParameters.TrustedConnection};";
+                    connectionString = $"Server={dbParameters.Server};Database={dbParameters.Database};Trusted_Connection={dbParameters.TrustedConnection};Connection Timeout={dbParameters.ConnectionTimeout};";
                     break;
                 case DataConnectionType.SQLServer_StandardSecurity_UseIpAddressAndPort:
                     dbParameters.NetworkLibrary = "DBMSSOCN";
-                    connectionString = $"Data Source={dbParameters.Server},{dbParameters.Port};Network Library={dbParameters.NetworkLibrary};Initial Catalog={dbParameters.Database};User ID={dbParameters.UserId};Password = {dbParameters.Password};";
+                    connectionString = $"Data Source={dbParameters.Server},{dbParameters.Port};Network Library={dbParameters.NetworkLibrary};Initial Catalog={dbParameters.Database};User ID={dbParameters.UserId};Password = {dbParameters.Password};Connection Timeout={dbParameters.ConnectionTimeout};";
                     break;
                 case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
                     dbParameters.Provider = "Microsoft.ACE.OLEDB.12.0";
@@ -145,10 +145,10 @@ namespace DataConnectorManager
                     connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};Jet OLEDB:Database Password={dbParameters.Password};";
                     break;
                 case DataConnectionType.MySQL_StandardConnection:
-                    connectionString = $"Server={dbParameters.Server};Database={dbParameters.Database};Uid={dbParameters.UserId};Pwd={dbParameters.Password};";
+                    connectionString = $"Server={dbParameters.Server};Database={dbParameters.Database};Uid={dbParameters.UserId};Pwd={dbParameters.Password};Connection Timeout={dbParameters.ConnectionTimeout};";
                     break;
                 case DataConnectionType.MySQL_ServerAndPortConnection:
-                    connectionString = $"Server={dbParameters.Server};Port={dbParameters.Port};Database={dbParameters.Database};Uid={dbParameters.UserId};Pwd={dbParameters.Password};";
+                    connectionString = $"Server={dbParameters.Server};Port={dbParameters.Port};Database={dbParameters.Database};Uid={dbParameters.UserId};Pwd={dbParameters.Password};Connection Timeout={dbParameters.ConnectionTimeout};";
                     break;
                 default:
                     connectionString = "";
@@ -187,6 +187,17 @@ namespace DataConnectorManager
         }
 
         /// <summary>
+        /// Get the message of the latest exception
+        /// </summary>
+        public string LastException
+        {
+            get
+            {
+                return Logs.GetLastException().Message;
+            }
+        }
+
+        /// <summary>
         /// Check if last command executed in stored DatabaseConnectionParameters succeeded
         /// </summary>
         /// <returns>Returns TRUE if last command succeded. Returns FALSE if last command failed. Throw an exception if there are no stored DatabaseConnectionParameters.</returns>
@@ -197,17 +208,53 @@ namespace DataConnectorManager
             else
                 throw new Exception("There are no stored DatabaseConnectionParameters");
         }
+        /// <summary>
+        /// Check if last command executed succeeded
+        /// </summary>
+        /// <returns>Returns TRUE if last command succeded. Returns FALSE if last command failed.</returns>
+        public bool LastCommandSucceeded(DatabaseConnectionParameters dbParameters)
+        {
+            return dbParameters.LastCommandSucceeded;
+        }
 
         /// <summary>
-        /// Get the message of the latest exception
+        /// Set Connection Timeout - Not working with OleDB
         /// </summary>
-        public string LastException
+        /// <param name="dbParameters">Connection Parameters</param>
+        /// <param name="timeout">Timeout</param>
+        public void SetConnectionTimeout(DatabaseConnectionParameters dbParameters, int timeout)
         {
-            get
-            {
-                return Logs.GetLastException().Message;
-            }
+            dbParameters.ConnectionTimeout = timeout;
         }
+        /// <summary>
+        /// Set Connection Timeout - Not working with OleDB
+        /// </summary>
+        /// <param name="dbParameters">Connection Parameters</param>
+        /// <param name="timeout">Timeout</param>
+        public void SetConnectionTimeout(int timeout)
+        {
+            SetConnectionTimeout(DbStoredParameters, timeout);
+        }
+
+        /// <summary>
+        /// Set Command Timeout
+        /// </summary>
+        /// <param name="dbParameters">Connection Parameters</param>
+        /// <param name="timeout">Timeout</param>
+        public void SetCommandTimeout(DatabaseConnectionParameters dbParameters, int timeout)
+        {
+            dbParameters.CommandTimeout = timeout;
+        }
+        /// <summary>
+        /// Set Command Timeout
+        /// </summary>
+        /// <param name="dbParameters">Connection Parameters</param>
+        /// <param name="timeout">Timeout</param>
+        public void SetCommandTimeout(int timeout)
+        {
+            SetCommandTimeout(DbStoredParameters, timeout);
+        }
+
 
         /// <summary>
         /// Check if connection is open

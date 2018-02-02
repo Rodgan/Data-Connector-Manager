@@ -51,6 +51,7 @@ namespace DataConnectorManager
                 if (dbParameters.QueryParameters != null)
                     sqlCommand.Parameters.AddRange((SqlParameter[]) dbParameters.QueryParameters);
 
+                sqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 sqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return sqlCommand.ExecuteReader();
@@ -79,6 +80,7 @@ namespace DataConnectorManager
                 if (dbParameters.QueryParameters != null)
                     sqlCommand.Parameters.AddRange((SqlParameter[])dbParameters.QueryParameters);
 
+                sqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 sqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return sqlCommand.ExecuteNonQuery();
@@ -107,6 +109,7 @@ namespace DataConnectorManager
                 if (dbParameters.QueryParameters != null)
                     sqlCommand.Parameters.AddRange((SqlParameter[])dbParameters.QueryParameters);
 
+                sqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 sqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return sqlCommand.ExecuteScalar();
@@ -134,6 +137,7 @@ namespace DataConnectorManager
                 sqlCommand.CommandText  = dbParameters.QueryString;
                 sqlCommand.Connection   = dbParameters.SQLConnection;
                 sqlCommand.CommandType  = dbParameters.CommandType;
+                sqlCommand.CommandTimeout = dbParameters.CommandTimeout;
 
                 if (dbParameters.QueryParameters != null)
                     sqlCommand.Parameters.AddRange((SqlParameter[])dbParameters.QueryParameters);
@@ -190,7 +194,7 @@ namespace DataConnectorManager
         {
             try
             {
-                return (dbParameters.SQLConnection.State == ConnectionState.Open);
+                return (dbParameters.SQLConnection != null && dbParameters.SQLConnection.State == ConnectionState.Open);
             }
             catch (Exception excp)
             {

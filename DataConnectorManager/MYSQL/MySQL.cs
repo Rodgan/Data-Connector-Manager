@@ -48,6 +48,7 @@ namespace DataConnectorManager
                 if (dbParameters.QueryParameters != null)
                     mySqlCommand.Parameters.AddRange((MySqlParameter[]) dbParameters.QueryParameters);
 
+                mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 mySqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return mySqlCommand.ExecuteReader();
@@ -76,6 +77,7 @@ namespace DataConnectorManager
                 if (dbParameters.QueryParameters != null)
                     mySqlCommand.Parameters.AddRange((MySqlParameter[])dbParameters.QueryParameters);
 
+                mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 mySqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return mySqlCommand.ExecuteNonQuery();
@@ -104,6 +106,7 @@ namespace DataConnectorManager
                 if (dbParameters.QueryParameters != null)
                     mySqlCommand.Parameters.AddRange((MySqlParameter[])dbParameters.QueryParameters);
 
+                mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 mySqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return mySqlCommand.ExecuteScalar();
@@ -131,6 +134,7 @@ namespace DataConnectorManager
                 mySqlCommand.CommandText = dbParameters.QueryString;
                 mySqlCommand.Connection = dbParameters.MySQLConnection;
                 mySqlCommand.CommandType = dbParameters.CommandType;
+                mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
 
                 if (dbParameters.QueryParameters != null)
                     mySqlCommand.Parameters.AddRange((MySqlParameter[])dbParameters.QueryParameters);
@@ -187,7 +191,7 @@ namespace DataConnectorManager
         {
             try
             {
-                return (dbParameters.MySQLConnection.State == ConnectionState.Open);
+                return (dbParameters.MySQLConnection != null && dbParameters.MySQLConnection.State == ConnectionState.Open);
             }
             catch(Exception excp)
             {

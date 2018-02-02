@@ -16,6 +16,16 @@ namespace DataConnectorManager
         public DataConnectionType ConnectionType;
         public string ConnectionString;
 
+        /// <summary>
+        /// Connection Timeout Limit.
+        /// NOT Working with OleDBConnection
+        /// </summary>
+        public int ConnectionTimeout = 5;
+        /// <summary>
+        /// Command Timeout Limit.
+        /// </summary>
+        public int CommandTimeout = 30;
+
         #region Query
         public DataContainerType    DataContainerType;
         public CommandBuildType            CommandBuildType;
@@ -65,6 +75,7 @@ namespace DataConnectorManager
             MultipleActiveResultSets = false;
             TrustedConnection        = false;
             Port = 0;
+            ConnectionTimeout = 5;
         }
         #endregion
 

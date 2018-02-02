@@ -50,6 +50,7 @@ namespace DataConnectorManager
                 if (dbParameters.QueryParameters != null)
                     oleDbCommand.Parameters.AddRange((OleDbParameter[])dbParameters.QueryParameters);
 
+                oleDbCommand.CommandTimeout = dbParameters.CommandTimeout;
                 oleDbCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return oleDbCommand.ExecuteReader();
@@ -78,6 +79,7 @@ namespace DataConnectorManager
                 if (dbParameters.QueryParameters != null)
                     oleDbCommand.Parameters.AddRange((OleDbParameter[])dbParameters.QueryParameters);
 
+                oleDbCommand.CommandTimeout = dbParameters.CommandTimeout;
                 oleDbCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return oleDbCommand.ExecuteNonQuery();
@@ -106,6 +108,7 @@ namespace DataConnectorManager
                 if (dbParameters.QueryParameters != null)
                     oleDbCommand.Parameters.AddRange((OleDbParameter[])dbParameters.QueryParameters);
 
+                oleDbCommand.CommandTimeout = dbParameters.CommandTimeout;
                 oleDbCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return oleDbCommand.ExecuteScalar();
@@ -133,6 +136,7 @@ namespace DataConnectorManager
                 oleDbCommand.CommandText = dbParameters.QueryString;
                 oleDbCommand.Connection = dbParameters.OLEDBConnection;
                 oleDbCommand.CommandType = dbParameters.CommandType;
+                oleDbCommand.CommandTimeout = dbParameters.CommandTimeout;
 
                 if (dbParameters.QueryParameters != null)
                     oleDbCommand.Parameters.AddRange((OleDbParameter[])dbParameters.QueryParameters);
@@ -189,7 +193,7 @@ namespace DataConnectorManager
         {
             try
             {
-                return (dbParameters.OLEDBConnection.State == ConnectionState.Open);
+                return (dbParameters.OLEDBConnection != null && dbParameters.OLEDBConnection.State == ConnectionState.Open);
             }
             catch (Exception excp)
             {
