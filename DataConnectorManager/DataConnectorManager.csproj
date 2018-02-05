@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MYSQL\MySQL.cs" />
+    <Compile Include="ODBC\ODBC.cs" />
     <Compile Include="OLEDB\OleDB.cs" />
     <Compile Include="ConnectionParameters.cs" />
     <Compile Include="DataConnector.cs" />

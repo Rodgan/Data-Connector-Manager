@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Odbc;
 using System.Linq;
 using System.Text;
-using MySql.Data.MySqlClient;
-using System.Data;
 
 namespace DataConnectorManager
 {
-    class MySQL
+    class ODBC
     {
         /// <summary>
-        /// Connect to MySQL Server using given parameters
+        /// Connect to ODBC using given parameters
         /// </summary>
         /// <param name="dbParameters">Connection Parameters</param>
         /// <returns>Returns TRUE is connection succeeds. Returns FALSE if connection fails.</returns>
@@ -18,19 +18,21 @@ namespace DataConnectorManager
         {
             try
             {
-                dbParameters.MySQLConnection = new MySqlConnection(dbParameters.ConnectionString);
+                dbParameters.ODBCConnection = new OdbcConnection(dbParameters.ConnectionString);
 
-                if (dbParameters.MySQLConnection.State == System.Data.ConnectionState.Closed)
-                    dbParameters.MySQLConnection.Open();
+                if (dbParameters.ODBCConnection.State == System.Data.ConnectionState.Closed)
+                    dbParameters.ODBCConnection.Open();
 
-                dbParameters.LastCommandSucceeded = (dbParameters.MySQLConnection.State == System.Data.ConnectionState.Open);
+                dbParameters.LastCommandSucceeded = (dbParameters.ODBCConnection.State == System.Data.ConnectionState.Open);
+
                 return dbParameters.LastCommandSucceeded;
             }
-            catch(Exception excp)
+            catch (Exception excp)
             {
                 Logs.AddException(excp);
                 dbParameters.LastCommandSucceeded = false;
-                return false;
+
+                return dbParameters.LastCommandSucceeded;
             }
         }
 
@@ -43,18 +45,18 @@ namespace DataConnectorManager
         {
             try
             {
-                var mySqlCommand = new MySqlCommand(dbParameters.QueryString, dbParameters.MySQLConnection);
+                var odbcCommand = new OdbcCommand(dbParameters.QueryString, dbParameters.ODBCConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    mySqlCommand.Parameters.AddRange((MySqlParameter[]) dbParameters.QueryParameters);
+                    odbcCommand.Parameters.AddRange((OdbcParameter[])dbParameters.QueryParameters);
 
-                mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
-                mySqlCommand.CommandType = dbParameters.CommandType;
+                odbcCommand.CommandTimeout = dbParameters.CommandTimeout;
+                odbcCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
-                return mySqlCommand.ExecuteReader();
-                
+                return odbcCommand.ExecuteReader();
+
             }
-            catch(Exception excp)
+            catch (Exception excp)
             {
                 Logs.AddException(excp);
                 dbParameters.LastCommandSucceeded = false;
@@ -72,15 +74,15 @@ namespace DataConnectorManager
         {
             try
             {
-                var mySqlCommand = new MySqlCommand(dbParameters.QueryString, dbParameters.MySQLConnection);
+                var odbcCommand = new OdbcCommand(dbParameters.QueryString, dbParameters.ODBCConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    mySqlCommand.Parameters.AddRange((MySqlParameter[])dbParameters.QueryParameters);
+                    odbcCommand.Parameters.AddRange((OdbcParameter[])dbParameters.QueryParameters);
 
-                mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
-                mySqlCommand.CommandType = dbParameters.CommandType;
+                odbcCommand.CommandTimeout = dbParameters.CommandTimeout;
+                odbcCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
-                return mySqlCommand.ExecuteNonQuery();
+                return odbcCommand.ExecuteNonQuery();
 
             }
             catch (Exception excp)
@@ -101,15 +103,15 @@ namespace DataConnectorManager
         {
             try
             {
-                var mySqlCommand = new MySqlCommand(dbParameters.QueryString, dbParameters.MySQLConnection);
+                var odbcCommand = new OdbcCommand(dbParameters.QueryString, dbParameters.ODBCConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    mySqlCommand.Parameters.AddRange((MySqlParameter[])dbParameters.QueryParameters);
+                    odbcCommand.Parameters.AddRange((OdbcParameter[])dbParameters.QueryParameters);
 
-                mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
-                mySqlCommand.CommandType = dbParameters.CommandType;
+                odbcCommand.CommandTimeout = dbParameters.CommandTimeout;
+                odbcCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
-                return mySqlCommand.ExecuteScalar();
+                return odbcCommand.ExecuteScalar();
 
             }
             catch (Exception excp)
@@ -130,27 +132,27 @@ namespace DataConnectorManager
         {
             try
             {
-                var mySqlCommand = new MySqlCommand();
-                mySqlCommand.CommandText = dbParameters.QueryString;
-                mySqlCommand.Connection = dbParameters.MySQLConnection;
-                mySqlCommand.CommandType = dbParameters.CommandType;
-                mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
+                var odbcCommand = new OdbcCommand();
+                odbcCommand.CommandText = dbParameters.QueryString;
+                odbcCommand.Connection = dbParameters.ODBCConnection;
+                odbcCommand.CommandType = dbParameters.CommandType;
+                odbcCommand.CommandTimeout = dbParameters.CommandTimeout;
 
                 if (dbParameters.QueryParameters != null)
-                    mySqlCommand.Parameters.AddRange((MySqlParameter[])dbParameters.QueryParameters);
+                    odbcCommand.Parameters.AddRange((OdbcParameter[])dbParameters.QueryParameters);
 
-                var mySqlAdapter = new MySqlDataAdapter();
+                var odbcAdapter = new OdbcDataAdapter();
 
                 switch (dbParameters.CommandBuildType)
                 {
                     case CommandBuildType.Insert:
-                        mySqlAdapter.InsertCommand = mySqlCommand;
+                        odbcAdapter.InsertCommand = odbcCommand;
                         break;
                     case CommandBuildType.Update:
-                        mySqlAdapter.UpdateCommand = mySqlCommand;
+                        odbcAdapter.UpdateCommand = odbcCommand;
                         break;
                     case CommandBuildType.Delete:
-                        mySqlAdapter.DeleteCommand = mySqlCommand;
+                        odbcAdapter.DeleteCommand = odbcCommand;
                         break;
                     default:
                         throw new Exception("Build Type missing");
@@ -161,13 +163,13 @@ namespace DataConnectorManager
                 switch (dbParameters.DataContainerType)
                 {
                     case DataContainerType.DataTable:
-                        return mySqlAdapter.Update(dbParameters.DataTableContainer);
+                        return odbcAdapter.Update(dbParameters.DataTableContainer);
                     case DataContainerType.DataSet:
-                        return mySqlAdapter.Update(dbParameters.DataSetContainer);
+                        return odbcAdapter.Update(dbParameters.DataSetContainer);
                     case DataContainerType.DataSetWithTable:
-                        return mySqlAdapter.Update(dbParameters.DataSetContainer, dbParameters.DataTableContainerName);
+                        return odbcAdapter.Update(dbParameters.DataSetContainer, dbParameters.DataTableContainerName);
                     case DataContainerType.DataRowsCollection:
-                        return mySqlAdapter.Update(dbParameters.DataRowsCollectionContainer);
+                        return odbcAdapter.Update(dbParameters.DataRowsCollectionContainer);
                     default:
                         throw new Exception("Data Container Type missing");
                 }
@@ -191,9 +193,9 @@ namespace DataConnectorManager
         {
             try
             {
-                return (dbParameters.MySQLConnection != null && dbParameters.MySQLConnection.State == ConnectionState.Open);
+                return (dbParameters.ODBCConnection != null && dbParameters.ODBCConnection.State == ConnectionState.Open);
             }
-            catch(Exception excp)
+            catch (Exception excp)
             {
                 Logs.AddException(excp);
                 return false;

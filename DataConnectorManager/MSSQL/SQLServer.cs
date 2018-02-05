@@ -41,7 +41,7 @@ namespace DataConnectorManager
         /// Execute query stored in DatabaseConnectionParameters.Query
         /// </summary>
         /// <param name="dbParameters">Connection Parameters</param>
-        /// <returns>Returns SQLDataReader if command succeeded. Returns NULL if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
+        /// <returns>Returns IDataReader if command succeeded. Returns NULL if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
         public static IDataReader ExecuteReader(DatabaseConnectionParameters dbParameters)
         {
             try

@@ -10,7 +10,7 @@ namespace DataConnectorManager
     class OleDb
     {
         /// <summary>
-        /// Connect to Access using given parameters
+        /// Connect to OleDB using given parameters
         /// </summary>
         /// <param name="dbParameters">Connection Parameters</param>
         /// <returns>Returns TRUE is connection succeeds. Returns FALSE if connection fails.</returns>
@@ -40,7 +40,7 @@ namespace DataConnectorManager
         /// Execute query stored in DatabaseConnectionParameters.Query
         /// </summary>
         /// <param name="dbParameters">Connection Parameters</param>
-        /// <returns>Returns SQLDataReader if command succeeded. Returns NULL if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
+        /// <returns>Returns IDataReader if command succeeded. Returns NULL if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
         public static IDataReader ExecuteReader(DatabaseConnectionParameters dbParameters)
         {
             try

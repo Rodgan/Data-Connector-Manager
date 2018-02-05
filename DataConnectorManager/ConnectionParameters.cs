@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Data.OleDb;
 using MySql.Data.MySqlClient;
+using System.Data.Odbc;
 
 namespace DataConnectorManager
 {
@@ -18,7 +19,8 @@ namespace DataConnectorManager
 
         /// <summary>
         /// Connection Timeout Limit.
-        /// NOT Working with OleDBConnection
+        /// NOT Working with OleDBConnection.
+        /// NOT Working with ODBC.
         /// </summary>
         public int ConnectionTimeout = 5;
         /// <summary>
@@ -40,6 +42,8 @@ namespace DataConnectorManager
         #endregion
 
         #region Connection Parameters
+        public string   UserId;
+        public string   Password;
 
         #region OleDB
         public string   FilePath;
@@ -47,18 +51,20 @@ namespace DataConnectorManager
         public bool     PersistSecurityInfo;
         #endregion
 
+        #region ODBC
+        public string DSN;
+        #endregion
+
         #region SQL
         public string   Server;
         public string   Database;
-        public string   UserId;
-        public string   Password;
         public bool     TrustedConnection;
-
         public int      Port;
         public string   NetworkLibrary;
 
         public bool MultipleActiveResultSets;
         #endregion
+
 
         /// <summary>
         /// Reset all Connection Parameters
@@ -72,6 +78,7 @@ namespace DataConnectorManager
             UserId          = "";
             Password        = "";
             NetworkLibrary  = "";
+            DSN             = "";
             MultipleActiveResultSets = false;
             TrustedConnection        = false;
             Port = 0;
@@ -83,6 +90,7 @@ namespace DataConnectorManager
         public SqlConnection SQLConnection;
         public OleDbConnection OLEDBConnection;
         public MySqlConnection MySQLConnection;
+        public OdbcConnection ODBCConnection;
         #endregion
     }
 }

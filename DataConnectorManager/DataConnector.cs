@@ -52,7 +52,16 @@ namespace DataConnectorManager
         /// <summary>
         /// Standard Connection to MySQL. Parameters to be set: Server, Port, Database, UserId, Password
         /// </summary>
-        MySQL_ServerAndPortConnection
+        MySQL_ServerAndPortConnection,
+
+        /// <summary>
+        /// Trusted Connection to ODBC. Parameters to be set: DSN
+        /// </summary>
+        ODBC_TrustedConnection,
+        /// <summary>
+        /// Standard Connection with login to ODBC. Parameters to be set: DSN, UserId, Password
+        /// </summary>
+        ODBC_StandardLogin
     }
     /// <summary>
     /// Used to determine which command will be built
@@ -85,18 +94,19 @@ namespace DataConnectorManager
         // Methods to set up for each DataConnectionType
         private void Shortcuts()
         {
-            SetConnectionString(DbStoredParameters, 0); // SQL (3) ACCESS (4) MYSQL (2)
-            ConnectToDatabase(DbStoredParameters);      // SQL (3) ACCESS (4) MYSQL (2)
-            IsOpen(DbStoredParameters);                 // SQL (3) ACCESS (4) MYSQL (2)
-            BuildCommand(DbStoredParameters);           // SQL (3) ACCESS (4) MYSQL (0)
-            ExecuteReader(DbStoredParameters);          // SQL (3) ACCESS (4) MYSQL (2)
-            ExecuteNonQuery(DbStoredParameters);        // SQL (3) ACCESS (4) MYSQL (2)
-            ExecuteScalar(DbStoredParameters);          // SQL (3) ACCESS (4) MYSQL (2)
+            SetConnectionString(DbStoredParameters, 0); // SQL (3) ACCESS (4) MYSQL (2) ODBC(2)
+            ConnectToDatabase(DbStoredParameters);      // SQL (3) ACCESS (4) MYSQL (2) ODBC(2)
+            IsOpen(DbStoredParameters);                 // SQL (3) ACCESS (4) MYSQL (2) ODBC(2)
+            BuildCommand(DbStoredParameters);           // SQL (3) ACCESS (4) MYSQL (2) ODBC(2)
+            ExecuteReader(DbStoredParameters);          // SQL (3) ACCESS (4) MYSQL (2) ODBC(2)
+            ExecuteNonQuery(DbStoredParameters);        // SQL (3) ACCESS (4) MYSQL (2) ODBC(2)
+            ExecuteScalar(DbStoredParameters);          // SQL (3) ACCESS (4) MYSQL (2) ODBC(2)
+
         }
         // REMOVE BEFORE PUBLISH
 
         /// <summary>
-        /// Stored DatabaseConnectionParameters. Can be used to call methods without passing DatabaseConnectionParameters 
+        /// Stored DatabaseConnectionParameters. Can be used to call methods without passing DatabaseConnectionParameters
         /// </summary>
         private DatabaseConnectionParameters DbStoredParameters;
 
@@ -149,6 +159,12 @@ namespace DataConnectorManager
                     break;
                 case DataConnectionType.MySQL_ServerAndPortConnection:
                     connectionString = $"Server={dbParameters.Server};Port={dbParameters.Port};Database={dbParameters.Database};Uid={dbParameters.UserId};Pwd={dbParameters.Password};Connection Timeout={dbParameters.ConnectionTimeout};";
+                    break;
+                case DataConnectionType.ODBC_TrustedConnection:
+                    connectionString = $"DSN={dbParameters.DSN};";
+                    break;
+                case DataConnectionType.ODBC_StandardLogin:
+                    connectionString = $"DSN={dbParameters.DSN};Uid={dbParameters.UserId};Pwd={dbParameters.Password};";
                     break;
                 default:
                     connectionString = "";
@@ -203,10 +219,7 @@ namespace DataConnectorManager
         /// <returns>Returns TRUE if last command succeded. Returns FALSE if last command failed. Throw an exception if there are no stored DatabaseConnectionParameters.</returns>
         public bool LastCommandSucceeded()
         {
-            if (DbStoredParameters != null)
-                return DbStoredParameters.LastCommandSucceeded;
-            else
-                throw new Exception("There are no stored DatabaseConnectionParameters");
+            return DbStoredParameters.LastCommandSucceeded;
         }
         /// <summary>
         /// Check if last command executed succeeded
@@ -280,6 +293,10 @@ namespace DataConnectorManager
                 case DataConnectionType.MySQL_ServerAndPortConnection:
                     return MySQL.IsOpen(dbParameters);
 
+                case DataConnectionType.ODBC_TrustedConnection:
+                case DataConnectionType.ODBC_StandardLogin:
+                    return ODBC.IsOpen(dbParameters);
+
                 default:
                     return false;
             }
@@ -320,16 +337,24 @@ namespace DataConnectorManager
                 case DataConnectionType.SQLServer_StandardSecurity_UseIpAddressAndPort:
                     SQLServer.ConnectToDatabase(dbParameters);
                     break;
+
                 case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
                 case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
                 case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
                 case DataConnectionType.Access_JET_OLEDB4_WithPassword:
                     Access.ConnectToDatabase(dbParameters);
                     break;
+
                 case DataConnectionType.MySQL_StandardConnection:
                 case DataConnectionType.MySQL_ServerAndPortConnection:
                     MySQL.ConnectToDatabase(dbParameters);
                     break;
+
+                case DataConnectionType.ODBC_TrustedConnection:
+                case DataConnectionType.ODBC_StandardLogin:
+                    ODBC.ConnectToDatabase(dbParameters);
+                    break;
+
                 default:
                     dbParameters.LastCommandSucceeded = false;
                     break;
@@ -537,6 +562,11 @@ namespace DataConnectorManager
                     returnValue = MySQL.BuildCommand(dbParameters);
                     break;
 
+                case DataConnectionType.ODBC_TrustedConnection:
+                case DataConnectionType.ODBC_StandardLogin:
+                    returnValue = ODBC.BuildCommand(dbParameters);
+                    break;
+
                 default:
                     break;
             }
@@ -594,6 +624,11 @@ namespace DataConnectorManager
                 case DataConnectionType.MySQL_StandardConnection:
                 case DataConnectionType.MySQL_ServerAndPortConnection:
                     returnValue = MySQL.ExecuteReader(dbParameters);
+                    break;
+
+                case DataConnectionType.ODBC_TrustedConnection:
+                case DataConnectionType.ODBC_StandardLogin:
+                    returnValue = ODBC.ExecuteReader(dbParameters);
                     break;
 
                 default:
@@ -657,6 +692,11 @@ namespace DataConnectorManager
                     returnValue = MySQL.ExecuteNonQuery(dbParameters);
                     break;
 
+                case DataConnectionType.ODBC_TrustedConnection:
+                case DataConnectionType.ODBC_StandardLogin:
+                    returnValue = ODBC.ExecuteNonQuery(dbParameters);
+                    break;
+
                 default:
                     break;
             }
@@ -705,6 +745,7 @@ namespace DataConnectorManager
                 case DataConnectionType.SQLServer_StandardSecurity_UseIpAddressAndPort:
                     returnValue = SQLServer.ExecuteScalar(dbParameters);
                     break;
+
                 case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
                 case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
                 case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
@@ -716,6 +757,12 @@ namespace DataConnectorManager
                 case DataConnectionType.MySQL_ServerAndPortConnection:
                     returnValue = MySQL.ExecuteScalar(dbParameters);
                     break;
+
+                case DataConnectionType.ODBC_TrustedConnection:
+                case DataConnectionType.ODBC_StandardLogin:
+                    returnValue = ODBC.ExecuteScalar(dbParameters);
+                    break;
+
                 default:
                     break;
             }
@@ -1556,6 +1603,20 @@ namespace DataConnectorManager
             SetDataContainer(DbStoredParameters, dataRowCollection);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
             return BuildDeleteCommand(DbStoredParameters);
+        }
+        #endregion
+
+        /// Specific Methods will ALWAYS returns values from methods of other classes
+        #region Specific Methods
+        /// <summary>
+        /// This method provides an help to build a string that contains a Stored Procedure for ODBC connections, since ODBC's Stored Procedures are syntactically different from others
+        /// </summary>
+        /// <param name="storedProcedureName">Stored Procedure to execute</param>
+        /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
+        /// <returns>Returns a string that contains a Stored Procedure that can be executed with ODBC connections</returns>
+        public string ODBC_StoredProcedureStringBuilder(string storedProcedureName, ICollection<object> storedProcedureParameters)
+        {
+            return "";
         }
         #endregion
 
