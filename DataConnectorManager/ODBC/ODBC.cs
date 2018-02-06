@@ -185,6 +185,50 @@ namespace DataConnectorManager
         }
 
         /// <summary>
+        /// Provides an help to build a string that contains a Stored Procedure for ODBC connections, since ODBC's Stored Procedures are syntactically different from others
+        /// </summary>
+        /// <param name="storedProcedureName">Stored Procedure to execute</param>
+        /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
+        /// <returns>Returns a string that contains a Stored Procedure that can be executed with ODBC connections</returns>
+        public static string BuildStoredProcedure(string storedProcedureName, ICollection<object> storedProcedureParameters)
+        {
+            // Standard Stored Procedure: {CALL spName}
+            // SP with single/multiple parameters: {CALL spName (?)} / {CALL spName (?,?,?)}
+            // SP with Return Value with/without parameters: {? = CALL spName} / {? = CALL spName(?,?,?)}
+
+            var spParameters = (OdbcParameter[]) storedProcedureParameters;
+                
+            if (spParameters.Count() == 0)
+            {
+                return $"{{ CALL {storedProcedureName} }}";
+            }
+
+            var spText = "{";
+            var spPlaceHoldersStartFrom = 0;
+
+            if (spParameters[0].Direction == ParameterDirection.ReturnValue)
+            {
+                spText += "? = ";
+                spPlaceHoldersStartFrom = 1;
+            }
+               
+            var spParametersPlaceHolders = "";
+
+            // placeholder = "?"
+            for ( var placeHolder = spPlaceHoldersStartFrom; placeHolder < spParameters.Count(); placeHolder++)
+            {
+                if (placeHolder == spParameters.Count() - 1)
+                    spParametersPlaceHolders += "?";
+                else
+                    spParametersPlaceHolders += "?,";
+            }
+
+            spText += $"CALL {storedProcedureName} ({spParametersPlaceHolders})}}";
+
+            return spText;
+        }
+
+        /// <summary>
         /// Check if connection is open
         /// </summary>
         /// <param name="dbParameters">Connection Parameters</param>

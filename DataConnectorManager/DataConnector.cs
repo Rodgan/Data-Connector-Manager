@@ -178,6 +178,16 @@ namespace DataConnectorManager
 
             return connectionString;
         }
+        /// <summary>
+        /// Setup Connection String in stored DatabaseConnectionParameters
+        /// </summary>
+        /// <param name="dbConnectionType">Connection Type</param>
+        /// <param name="saveDatabaseConnectionParameters">If TRUE DatabaseConnectionParameters will be stored in the class instance</param>
+        /// <returns>Returns Connection String - It will also be stored in DatabaseConnectionParameters.ConnectionString</returns>
+        public string SetConnectionString(DataConnectionType dbConnectionType, bool saveDatabaseConnectionParameters = false)
+        {
+            return SetConnectionString(DbStoredParameters, dbConnectionType, saveDatabaseConnectionParameters);
+        }
         
         /// <summary>
         /// Allows user to store DatabaseConnectionParameters in DataConnector instance
@@ -316,10 +326,11 @@ namespace DataConnectorManager
         /// </summary>
         /// <param name="dbParameters">Parameters</param>
         /// <param name="dbConnectionType">Connection Type</param>
+        /// <param name="saveDatabaseConnectionParameters">If TRUE DatabaseConnectionParameters will be stored in the class instance</param>
         /// <returns>Returns TRUE if connection succeeds. Returns FALSE if connection fails.</returns>
-        public bool ConnectToDatabase(DatabaseConnectionParameters dbParameters, DataConnectionType dbConnectionType)
+        public bool ConnectToDatabase(DatabaseConnectionParameters dbParameters, DataConnectionType dbConnectionType, bool saveDatabaseConnectionParameters = false)
         {
-            SetConnectionString(dbParameters, dbConnectionType);
+            SetConnectionString(dbParameters, dbConnectionType, saveDatabaseConnectionParameters);
             return ConnectToDatabase(dbParameters);
         }
         /// <summary>
@@ -1606,17 +1617,18 @@ namespace DataConnectorManager
         }
         #endregion
 
-        /// Specific Methods will ALWAYS returns values from methods of other classes
-        #region Specific Methods
+        /// Specific Helper Methods will ALWAYS returns values from methods of other classes
+        /// Specific Helper Methods name will ALWAYS begin with database tyoe name (ODBC_, ACCESS_, EXCEL_ etc...)
+        #region Specific Helper Methods
         /// <summary>
-        /// This method provides an help to build a string that contains a Stored Procedure for ODBC connections, since ODBC's Stored Procedures are syntactically different from others
+        /// Provides an help to build a string that contains a Stored Procedure for ODBC connections, since ODBC's Stored Procedures are syntactically different from others
         /// </summary>
         /// <param name="storedProcedureName">Stored Procedure to execute</param>
         /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
         /// <returns>Returns a string that contains a Stored Procedure that can be executed with ODBC connections</returns>
         public string ODBC_StoredProcedureStringBuilder(string storedProcedureName, ICollection<object> storedProcedureParameters)
         {
-            return "";
+            return ODBC.BuildStoredProcedure(storedProcedureName, storedProcedureParameters);
         }
         #endregion
 

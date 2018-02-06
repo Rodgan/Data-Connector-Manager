@@ -84,7 +84,7 @@ namespace DataConnectorManager
                 sqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
                 return sqlCommand.ExecuteNonQuery();
-
+                
             }
             catch (Exception excp)
             {
