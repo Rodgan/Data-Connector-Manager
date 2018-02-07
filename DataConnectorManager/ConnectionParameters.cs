@@ -30,9 +30,9 @@ namespace DataConnectorManager
 
         #region Query
         public DataContainerType    DataContainerType;
-        public CommandBuildType            CommandBuildType;
+        public CommandBuildType     CommandBuildType;
         public CommandType          CommandType;
-        public ICollection<object>  QueryParameters;
+        public IEnumerable<object>  QueryParameters;
         public string               QueryString;
         public bool                 LastCommandSucceeded;
         public DataSet              DataSetContainer;

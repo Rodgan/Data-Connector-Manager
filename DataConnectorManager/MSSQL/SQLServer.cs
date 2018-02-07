@@ -49,7 +49,12 @@ namespace DataConnectorManager
                 var sqlCommand = new SqlCommand(dbParameters.QueryString, dbParameters.SQLConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    sqlCommand.Parameters.AddRange((SqlParameter[]) dbParameters.QueryParameters);
+                {
+                    foreach (SqlParameter item in dbParameters.QueryParameters)
+                    {
+                        sqlCommand.Parameters.Add(item);
+                    }
+                }
 
                 sqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 sqlCommand.CommandType = dbParameters.CommandType;
@@ -78,7 +83,12 @@ namespace DataConnectorManager
                 var sqlCommand = new SqlCommand(dbParameters.QueryString, dbParameters.SQLConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    sqlCommand.Parameters.AddRange((SqlParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (SqlParameter item in dbParameters.QueryParameters)
+                    {
+                        sqlCommand.Parameters.Add(item);
+                    }
+                }
 
                 sqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 sqlCommand.CommandType = dbParameters.CommandType;
@@ -107,8 +117,13 @@ namespace DataConnectorManager
                 var sqlCommand = new SqlCommand(dbParameters.QueryString, dbParameters.SQLConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    sqlCommand.Parameters.AddRange((SqlParameter[])dbParameters.QueryParameters);
-
+                {
+                    foreach (SqlParameter item in dbParameters.QueryParameters)
+                    {
+                        sqlCommand.Parameters.Add(item);
+                    }
+                }
+        
                 sqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 sqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
@@ -140,7 +155,12 @@ namespace DataConnectorManager
                 sqlCommand.CommandTimeout = dbParameters.CommandTimeout;
 
                 if (dbParameters.QueryParameters != null)
-                    sqlCommand.Parameters.AddRange((SqlParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (SqlParameter item in dbParameters.QueryParameters)
+                    {
+                        sqlCommand.Parameters.Add(item);
+                    }
+                }
 
                 var sqlAdapter = new SqlDataAdapter();
 

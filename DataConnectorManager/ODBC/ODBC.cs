@@ -48,7 +48,12 @@ namespace DataConnectorManager
                 var odbcCommand = new OdbcCommand(dbParameters.QueryString, dbParameters.ODBCConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    odbcCommand.Parameters.AddRange((OdbcParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (OdbcParameter item in dbParameters.QueryParameters)
+                    {
+                        odbcCommand.Parameters.Add(item);
+                    }
+                }
 
                 odbcCommand.CommandTimeout = dbParameters.CommandTimeout;
                 odbcCommand.CommandType = dbParameters.CommandType;
@@ -77,7 +82,12 @@ namespace DataConnectorManager
                 var odbcCommand = new OdbcCommand(dbParameters.QueryString, dbParameters.ODBCConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    odbcCommand.Parameters.AddRange((OdbcParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (OdbcParameter item in dbParameters.QueryParameters)
+                    {
+                        odbcCommand.Parameters.Add(item);
+                    }
+                }
 
                 odbcCommand.CommandTimeout = dbParameters.CommandTimeout;
                 odbcCommand.CommandType = dbParameters.CommandType;
@@ -106,7 +116,12 @@ namespace DataConnectorManager
                 var odbcCommand = new OdbcCommand(dbParameters.QueryString, dbParameters.ODBCConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    odbcCommand.Parameters.AddRange((OdbcParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (OdbcParameter item in dbParameters.QueryParameters)
+                    {
+                        odbcCommand.Parameters.Add(item);
+                    }
+                }
 
                 odbcCommand.CommandTimeout = dbParameters.CommandTimeout;
                 odbcCommand.CommandType = dbParameters.CommandType;
@@ -139,7 +154,12 @@ namespace DataConnectorManager
                 odbcCommand.CommandTimeout = dbParameters.CommandTimeout;
 
                 if (dbParameters.QueryParameters != null)
-                    odbcCommand.Parameters.AddRange((OdbcParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (OdbcParameter item in dbParameters.QueryParameters)
+                    {
+                        odbcCommand.Parameters.Add(item);
+                    }
+                }
 
                 var odbcAdapter = new OdbcDataAdapter();
 
@@ -190,14 +210,22 @@ namespace DataConnectorManager
         /// <param name="storedProcedureName">Stored Procedure to execute</param>
         /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
         /// <returns>Returns a string that contains a Stored Procedure that can be executed with ODBC connections</returns>
-        public static string BuildStoredProcedure(string storedProcedureName, ICollection<object> storedProcedureParameters)
+        public static string BuildStoredProcedure(string storedProcedureName, IEnumerable<object> storedProcedureParameters)
         {
             // Standard Stored Procedure: {CALL spName}
             // SP with single/multiple parameters: {CALL spName (?)} / {CALL spName (?,?,?)}
             // SP with Return Value with/without parameters: {? = CALL spName} / {? = CALL spName(?,?,?)}
 
-            var spParameters = (OdbcParameter[]) storedProcedureParameters;
-                
+            List<OdbcParameter> spParameters = new List<OdbcParameter>();
+
+            if (storedProcedureParameters != null)
+            {
+                foreach (OdbcParameter item in storedProcedureParameters)
+                {
+                    spParameters.Add(item);
+                }
+            }
+
             if (spParameters.Count() == 0)
             {
                 return $"{{ CALL {storedProcedureName} }}";

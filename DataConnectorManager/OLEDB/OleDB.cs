@@ -48,7 +48,12 @@ namespace DataConnectorManager
                 var oleDbCommand = new OleDbCommand(dbParameters.QueryString, dbParameters.OLEDBConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    oleDbCommand.Parameters.AddRange((OleDbParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (OleDbParameter item in dbParameters.QueryParameters)
+                    {
+                        oleDbCommand.Parameters.Add(item);
+                    }
+                }
 
                 oleDbCommand.CommandTimeout = dbParameters.CommandTimeout;
                 oleDbCommand.CommandType = dbParameters.CommandType;
@@ -77,7 +82,12 @@ namespace DataConnectorManager
                 var oleDbCommand = new OleDbCommand(dbParameters.QueryString, dbParameters.OLEDBConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    oleDbCommand.Parameters.AddRange((OleDbParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (OleDbParameter item in dbParameters.QueryParameters)
+                    {
+                        oleDbCommand.Parameters.Add(item);
+                    }
+                }
 
                 oleDbCommand.CommandTimeout = dbParameters.CommandTimeout;
                 oleDbCommand.CommandType = dbParameters.CommandType;
@@ -106,7 +116,12 @@ namespace DataConnectorManager
                 var oleDbCommand = new OleDbCommand(dbParameters.QueryString, dbParameters.OLEDBConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    oleDbCommand.Parameters.AddRange((OleDbParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (OleDbParameter item in dbParameters.QueryParameters)
+                    {
+                        oleDbCommand.Parameters.Add(item);
+                    }
+                }
 
                 oleDbCommand.CommandTimeout = dbParameters.CommandTimeout;
                 oleDbCommand.CommandType = dbParameters.CommandType;
@@ -139,7 +154,12 @@ namespace DataConnectorManager
                 oleDbCommand.CommandTimeout = dbParameters.CommandTimeout;
 
                 if (dbParameters.QueryParameters != null)
-                    oleDbCommand.Parameters.AddRange((OleDbParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (OleDbParameter item in dbParameters.QueryParameters)
+                    {
+                        oleDbCommand.Parameters.Add(item);
+                    }
+                }
 
                 var oleDbAdapter = new OleDbDataAdapter();
 

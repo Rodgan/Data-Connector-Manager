@@ -46,8 +46,12 @@ namespace DataConnectorManager
                 var mySqlCommand = new MySqlCommand(dbParameters.QueryString, dbParameters.MySQLConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    mySqlCommand.Parameters.AddRange((MySqlParameter[]) dbParameters.QueryParameters);
-
+                {
+                    foreach (MySqlParameter item in dbParameters.QueryParameters)
+                    {
+                        mySqlCommand.Parameters.Add(item);
+                    }
+                }
                 mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 mySqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
@@ -75,8 +79,12 @@ namespace DataConnectorManager
                 var mySqlCommand = new MySqlCommand(dbParameters.QueryString, dbParameters.MySQLConnection);
 
                 if (dbParameters.QueryParameters != null)
-                    mySqlCommand.Parameters.AddRange((MySqlParameter[])dbParameters.QueryParameters);
-
+                {
+                    foreach (MySqlParameter item in dbParameters.QueryParameters)
+                    {
+                        mySqlCommand.Parameters.Add(item);
+                    }
+                }
                 mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 mySqlCommand.CommandType = dbParameters.CommandType;
                 dbParameters.LastCommandSucceeded = true;
@@ -103,8 +111,14 @@ namespace DataConnectorManager
             {
                 var mySqlCommand = new MySqlCommand(dbParameters.QueryString, dbParameters.MySQLConnection);
 
+
                 if (dbParameters.QueryParameters != null)
-                    mySqlCommand.Parameters.AddRange((MySqlParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (MySqlParameter item in dbParameters.QueryParameters)
+                    {
+                        mySqlCommand.Parameters.Add(item);
+                    }
+                }
 
                 mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
                 mySqlCommand.CommandType = dbParameters.CommandType;
@@ -137,7 +151,12 @@ namespace DataConnectorManager
                 mySqlCommand.CommandTimeout = dbParameters.CommandTimeout;
 
                 if (dbParameters.QueryParameters != null)
-                    mySqlCommand.Parameters.AddRange((MySqlParameter[])dbParameters.QueryParameters);
+                {
+                    foreach (MySqlParameter item in dbParameters.QueryParameters)
+                    {
+                        mySqlCommand.Parameters.Add(item);
+                    }
+                }
 
                 var mySqlAdapter = new MySqlDataAdapter();
 

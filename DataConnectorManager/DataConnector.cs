@@ -252,7 +252,6 @@ namespace DataConnectorManager
         /// <summary>
         /// Set Connection Timeout - Not working with OleDB
         /// </summary>
-        /// <param name="dbParameters">Connection Parameters</param>
         /// <param name="timeout">Timeout</param>
         public void SetConnectionTimeout(int timeout)
         {
@@ -396,7 +395,7 @@ namespace DataConnectorManager
         /// </summary>
         /// <param name="dbParameters">Connection Parameters</param>
         /// <param name="queryParameters">Query Parameters</param>
-        public void SetQueryAndParameters(DatabaseConnectionParameters dbParameters, ICollection<object> queryParameters)
+        public void SetQueryAndParameters(DatabaseConnectionParameters dbParameters, IEnumerable<object> queryParameters)
         {
             dbParameters.QueryParameters = queryParameters;
         }
@@ -404,7 +403,7 @@ namespace DataConnectorManager
         /// Set QueryParameters in stored DatabaseConnectionParameters
         /// </summary>
         /// <param name="queryParameters">Query Parameters</param>
-        public void SetQueryAndParameters(ICollection<object> queryParameters)
+        public void SetQueryAndParameters(IEnumerable<object> queryParameters)
         {
             SetQueryAndParameters(DbStoredParameters, queryParameters);
         }
@@ -414,7 +413,7 @@ namespace DataConnectorManager
         /// <param name="dbParameters">Connection Parameters</param>
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
-        public void SetQueryAndParameters(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters)
+        public void SetQueryAndParameters(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters)
         {
             dbParameters.QueryString = query;
             dbParameters.QueryParameters = queryParameters;
@@ -424,7 +423,7 @@ namespace DataConnectorManager
         /// </summary>
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
-        public void SetQueryAndParameters(string query, ICollection<object> queryParameters)
+        public void SetQueryAndParameters(string query, IEnumerable<object> queryParameters)
         {
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
         }
@@ -801,7 +800,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// <returns>Returns a value (usually an IDataReader) if command succeeded. Returns NULL if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public IDataReader Select(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters)
+        public IDataReader Select(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters)
         {
             dbParameters.QueryString = query;
             dbParameters.QueryParameters = queryParameters;
@@ -834,7 +833,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// <returns>Returns a value (usually an IDataReader) if command succeeded. Returns NULL if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public IDataReader Select(string query, ICollection<object> queryParameters)
+        public IDataReader Select(string query, IEnumerable<object> queryParameters)
         {
             DbStoredParameters.QueryString = query;
             DbStoredParameters.QueryParameters = queryParameters;
@@ -858,7 +857,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// <returns>Returns a single value as object if command succeeds. May return NULL whether command fails or not. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public object SelectSingleValue(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters)
+        public object SelectSingleValue(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters)
         {
             dbParameters.QueryString = query;
             dbParameters.QueryParameters = queryParameters;
@@ -891,7 +890,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// <returns>Returns a single value as object if command succeeds. May return NULL whether command fails or not. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public object SelectSingleValue(string query, ICollection<object> queryParameters)
+        public object SelectSingleValue(string query, IEnumerable<object> queryParameters)
         {
             DbStoredParameters.QueryString = query;
             DbStoredParameters.QueryParameters = queryParameters;
@@ -915,7 +914,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int Insert(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters)
+        public int Insert(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters)
         {
             dbParameters.QueryString = query;
             dbParameters.QueryParameters = queryParameters;
@@ -948,7 +947,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int Insert(string query, ICollection<object> queryParameters)
+        public int Insert(string query, IEnumerable<object> queryParameters)
         {
             DbStoredParameters.QueryString = query;
             DbStoredParameters.QueryParameters = queryParameters;
@@ -972,7 +971,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int Update(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters)
+        public int Update(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters)
         {
             dbParameters.QueryString = query;
             dbParameters.QueryParameters = queryParameters;
@@ -1005,7 +1004,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int Update(string query, ICollection<object> queryParameters)
+        public int Update(string query, IEnumerable<object> queryParameters)
         {
             DbStoredParameters.QueryString = query;
             DbStoredParameters.QueryParameters = queryParameters;
@@ -1029,7 +1028,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int Delete(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters)
+        public int Delete(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters)
         {
             dbParameters.QueryString = query;
             dbParameters.QueryParameters = queryParameters;
@@ -1062,7 +1061,7 @@ namespace DataConnectorManager
         /// <param name="query">Query to execute</param>
         /// <param name="queryParameters">Query Parameters</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int Delete(string query, ICollection<object> queryParameters)
+        public int Delete(string query, IEnumerable<object> queryParameters)
         {
             DbStoredParameters.QueryString = query;
             DbStoredParameters.QueryParameters = queryParameters;
@@ -1086,7 +1085,7 @@ namespace DataConnectorManager
         /// <param name="storedProcedureName">Stored Procedure to execute</param>
         /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
         /// <returns>Returns a value (usually an IDataReader) if command succeeded. Returns NULL if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public IDataReader StoredProcedure(DatabaseConnectionParameters dbParameters, string storedProcedureName, ICollection<object> storedProcedureParameters)
+        public IDataReader StoredProcedure(DatabaseConnectionParameters dbParameters, string storedProcedureName, IEnumerable<object> storedProcedureParameters)
         {
             dbParameters.QueryString = storedProcedureName;
             dbParameters.QueryParameters = storedProcedureParameters;
@@ -1119,7 +1118,7 @@ namespace DataConnectorManager
         /// <param name="storedProcedureName">Stored Procedure to execute</param>
         /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
         /// <returns>Returns a value (usually an IDataReader) if command succeeded. Returns NULL if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public IDataReader StoredProcedure(string storedProcedureName, ICollection<object> storedProcedureParameters)
+        public IDataReader StoredProcedure(string storedProcedureName, IEnumerable<object> storedProcedureParameters)
         {
             DbStoredParameters.QueryString = storedProcedureName;
             DbStoredParameters.QueryParameters = storedProcedureParameters;
@@ -1143,7 +1142,7 @@ namespace DataConnectorManager
         /// <param name="storedProcedureName">Stored Procedure to execute</param>
         /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int StoredProcedureNonQuery(DatabaseConnectionParameters dbParameters, string storedProcedureName, ICollection<object> storedProcedureParameters)
+        public int StoredProcedureNonQuery(DatabaseConnectionParameters dbParameters, string storedProcedureName, IEnumerable<object> storedProcedureParameters)
         {
             dbParameters.QueryString = storedProcedureName;
             dbParameters.QueryParameters = storedProcedureParameters;
@@ -1176,7 +1175,7 @@ namespace DataConnectorManager
         /// <param name="storedProcedureName">Stored Procedure to execute</param>
         /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int StoredProcedureNonQuery(string storedProcedureName, ICollection<object> storedProcedureParameters)
+        public int StoredProcedureNonQuery(string storedProcedureName, IEnumerable<object> storedProcedureParameters)
         {
             DbStoredParameters.QueryString = storedProcedureName;
             DbStoredParameters.QueryParameters = storedProcedureParameters;
@@ -1200,7 +1199,7 @@ namespace DataConnectorManager
         /// <param name="storedProcedureName">Stored Procedure to execute</param>
         /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
         /// <returns>Returns a single value as object if command succeeds. May return NULL whether command fails or not. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public object StoredProcedureSingleValue(DatabaseConnectionParameters dbParameters, string storedProcedureName, ICollection<object> storedProcedureParameters)
+        public object StoredProcedureSingleValue(DatabaseConnectionParameters dbParameters, string storedProcedureName, IEnumerable<object> storedProcedureParameters)
         {
             dbParameters.QueryString = storedProcedureName;
             dbParameters.QueryParameters = storedProcedureParameters;
@@ -1233,7 +1232,7 @@ namespace DataConnectorManager
         /// <param name="storedProcedureName">Stored Procedure to execute</param>
         /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
         /// <returns>Returns a single value as object if command succeeds. May return NULL whether command fails or not. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public object StoredProcedureSingleValue(string storedProcedureName, ICollection<object> storedProcedureParameters)
+        public object StoredProcedureSingleValue(string storedProcedureName, IEnumerable<object> storedProcedureParameters)
         {
             DbStoredParameters.QueryString = storedProcedureName;
             DbStoredParameters.QueryParameters = storedProcedureParameters;
@@ -1261,7 +1260,7 @@ namespace DataConnectorManager
         /// <param name="dataSetContainer">DataSet</param>
         /// <param name="dataTableName">DataTable Name</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildInsertCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataSet dataSetContainer, string dataTableName)
+        public int BuildInsertCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataSet dataSetContainer, string dataTableName)
         {
             SetDataContainer(dbParameters, dataSetContainer, dataTableName);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1275,7 +1274,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataSetContainer">DataSet</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildInsertCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataSet dataSetContainer)
+        public int BuildInsertCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataSet dataSetContainer)
         {
             SetDataContainer(dbParameters, dataSetContainer);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1289,7 +1288,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataTableContainer">DataTable</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildInsertCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataTable dataTableContainer)
+        public int BuildInsertCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataTable dataTableContainer)
         {
             SetDataContainer(dbParameters, dataTableContainer);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1303,7 +1302,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataRowCollection">DataRowCollection</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildInsertCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataRow[] dataRowCollection)
+        public int BuildInsertCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataRow[] dataRowCollection)
         {
             SetDataContainer(dbParameters, dataRowCollection);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1327,7 +1326,7 @@ namespace DataConnectorManager
         /// <param name="dataSetContainer">DataSet</param>
         /// <param name="dataTableName">DataTable Name</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildInsertCommand(string query, ICollection<object> queryParameters, DataSet dataSetContainer, string dataTableName)
+        public int BuildInsertCommand(string query, IEnumerable<object> queryParameters, DataSet dataSetContainer, string dataTableName)
         {
             SetDataContainer(DbStoredParameters, dataSetContainer, dataTableName);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1340,7 +1339,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataSetContainer">DataSet</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildInsertCommand(string query, ICollection<object> queryParameters, DataSet dataSetContainer)
+        public int BuildInsertCommand(string query, IEnumerable<object> queryParameters, DataSet dataSetContainer)
         {
             SetDataContainer(DbStoredParameters, dataSetContainer);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1353,7 +1352,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataTableContainer">DataTable</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildInsertCommand(string query, ICollection<object> queryParameters, DataTable dataTableContainer)
+        public int BuildInsertCommand(string query, IEnumerable<object> queryParameters, DataTable dataTableContainer)
         {
             SetDataContainer(DbStoredParameters, dataTableContainer);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1366,7 +1365,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataRowCollection">DataRowCollection</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildInsertCommand(string query, ICollection<object> queryParameters, DataRow[] dataRowCollection)
+        public int BuildInsertCommand(string query, IEnumerable<object> queryParameters, DataRow[] dataRowCollection)
         {
             SetDataContainer(DbStoredParameters, dataRowCollection);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1382,7 +1381,7 @@ namespace DataConnectorManager
         /// <param name="dataSetContainer">DataSet</param>
         /// <param name="dataTableName">DataTable Name</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildUpdateCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataSet dataSetContainer, string dataTableName)
+        public int BuildUpdateCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataSet dataSetContainer, string dataTableName)
         {
             SetDataContainer(dbParameters, dataSetContainer, dataTableName);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1396,7 +1395,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataSetContainer">DataSet</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildUpdateCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataSet dataSetContainer)
+        public int BuildUpdateCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataSet dataSetContainer)
         {
             SetDataContainer(dbParameters, dataSetContainer);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1410,7 +1409,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataTableContainer">DataTable</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildUpdateCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataTable dataTableContainer)
+        public int BuildUpdateCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataTable dataTableContainer)
         {
             SetDataContainer(dbParameters, dataTableContainer);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1424,7 +1423,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataRowCollection">DataRow<Collection</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildUpdateCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataRow[] dataRowCollection)
+        public int BuildUpdateCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataRow[] dataRowCollection)
         {
             SetDataContainer(dbParameters, dataRowCollection);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1448,7 +1447,7 @@ namespace DataConnectorManager
         /// <param name="dataSetContainer">DataSet</param>
         /// <param name="dataTableName">DataTable Name</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildUpdateCommand(string query, ICollection<object> queryParameters, DataSet dataSetContainer, string dataTableName)
+        public int BuildUpdateCommand(string query, IEnumerable<object> queryParameters, DataSet dataSetContainer, string dataTableName)
         {
             SetDataContainer(DbStoredParameters, dataSetContainer, dataTableName);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1461,7 +1460,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataSetContainer">DataSet</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildUpdateCommand(string query, ICollection<object> queryParameters, DataSet dataSetContainer)
+        public int BuildUpdateCommand(string query, IEnumerable<object> queryParameters, DataSet dataSetContainer)
         {
             SetDataContainer(DbStoredParameters, dataSetContainer);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1474,7 +1473,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataTableContainer">DataTable</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildUpdateCommand(string query, ICollection<object> queryParameters, DataTable dataTableContainer)
+        public int BuildUpdateCommand(string query, IEnumerable<object> queryParameters, DataTable dataTableContainer)
         {
             SetDataContainer(DbStoredParameters, dataTableContainer);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1487,7 +1486,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataRowCollection">DataRow<Collection</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildUpdateCommand(string query, ICollection<object> queryParameters, DataRow[] dataRowCollection)
+        public int BuildUpdateCommand(string query, IEnumerable<object> queryParameters, DataRow[] dataRowCollection)
         {
             SetDataContainer(DbStoredParameters, dataRowCollection);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1504,7 +1503,7 @@ namespace DataConnectorManager
         /// <param name="dataSetContainer">DataSet</param>
         /// <param name="dataTableName">DataTable Name</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildDeleteCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataSet dataSetContainer, string dataTableName)
+        public int BuildDeleteCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataSet dataSetContainer, string dataTableName)
         {
             SetDataContainer(dbParameters, dataSetContainer, dataTableName);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1518,7 +1517,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataSetContainer">DataSet</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildDeleteCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataSet dataSetContainer)
+        public int BuildDeleteCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataSet dataSetContainer)
         {
             SetDataContainer(dbParameters, dataSetContainer);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1532,7 +1531,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataTableContainer">DataTable</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildDeleteCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataTable dataTableContainer)
+        public int BuildDeleteCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataTable dataTableContainer)
         {
             SetDataContainer(dbParameters, dataTableContainer);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1546,7 +1545,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataRowCollection">DataRowCollection</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildDeleteCommand(DatabaseConnectionParameters dbParameters, string query, ICollection<object> queryParameters, DataRow[] dataRowCollection)
+        public int BuildDeleteCommand(DatabaseConnectionParameters dbParameters, string query, IEnumerable<object> queryParameters, DataRow[] dataRowCollection)
         {
             SetDataContainer(dbParameters, dataRowCollection);
             SetQueryAndParameters(dbParameters, query, queryParameters);
@@ -1570,7 +1569,7 @@ namespace DataConnectorManager
         /// <param name="dataSetContainer">DataSet</param>
         /// <param name="dataTableName">DataTable Name</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildDeleteCommand(string query, ICollection<object> queryParameters, DataSet dataSetContainer, string dataTableName)
+        public int BuildDeleteCommand(string query, IEnumerable<object> queryParameters, DataSet dataSetContainer, string dataTableName)
         {
             SetDataContainer(DbStoredParameters, dataSetContainer, dataTableName);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1583,7 +1582,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataSetContainer">DataSet</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildDeleteCommand(string query, ICollection<object> queryParameters, DataSet dataSetContainer)
+        public int BuildDeleteCommand(string query, IEnumerable<object> queryParameters, DataSet dataSetContainer)
         {
             SetDataContainer(DbStoredParameters, dataSetContainer);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1596,7 +1595,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataTableContainer">DataTable</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildDeleteCommand(string query, ICollection<object> queryParameters, DataTable dataTableContainer)
+        public int BuildDeleteCommand(string query, IEnumerable<object> queryParameters, DataTable dataTableContainer)
         {
             SetDataContainer(DbStoredParameters, dataTableContainer);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1609,7 +1608,7 @@ namespace DataConnectorManager
         /// <param name="queryParameters">Query Parameters</param>
         /// <param name="dataRowCollection">DataRowCollection</param>
         /// <returns>Returns the number of rows affected if command succeeds. Returns -1 if command fails. Command execution success will also be stored in DatabaseConnectionParameters.LastCommandSucceeded</returns>
-        public int BuildDeleteCommand(string query, ICollection<object> queryParameters, DataRow[] dataRowCollection)
+        public int BuildDeleteCommand(string query, IEnumerable<object> queryParameters, DataRow[] dataRowCollection)
         {
             SetDataContainer(DbStoredParameters, dataRowCollection);
             SetQueryAndParameters(DbStoredParameters, query, queryParameters);
@@ -1626,7 +1625,7 @@ namespace DataConnectorManager
         /// <param name="storedProcedureName">Stored Procedure to execute</param>
         /// <param name="storedProcedureParameters">Stored Procedure Parameters</param>
         /// <returns>Returns a string that contains a Stored Procedure that can be executed with ODBC connections</returns>
-        public string ODBC_StoredProcedureStringBuilder(string storedProcedureName, ICollection<object> storedProcedureParameters)
+        public string ODBC_StoredProcedureStringBuilder(string storedProcedureName, IEnumerable<object> storedProcedureParameters)
         {
             return ODBC.BuildStoredProcedure(storedProcedureName, storedProcedureParameters);
         }
