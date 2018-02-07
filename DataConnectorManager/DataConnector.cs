@@ -111,6 +111,11 @@ namespace DataConnectorManager
         private DatabaseConnectionParameters DbStoredParameters;
 
         /// <summary>
+        /// If TRUE, Build Commands will be treated as Stored Procedures. If FALSE, Build Commands will be treated as Raw Queries. DEFAULT: False
+        /// </summary>
+        public bool ExecuteBuildCommandsAsStoredProcedure = false;
+
+        /// <summary>
         /// Setup Connection String in DatabaseConnectionParameters
         /// </summary>
         /// <param name="dbParameters">DatabaseConnectionParameters</param>
@@ -277,6 +282,20 @@ namespace DataConnectorManager
             SetCommandTimeout(DbStoredParameters, timeout);
         }
 
+        /// <summary>
+        /// Using this method, Build Commands will be treated as Raw Queries (this is set as default option)
+        /// </summary>
+        public void SetBuildCommandsAsRawQueries()
+        {
+            ExecuteBuildCommandsAsStoredProcedure = false;
+        }
+        /// <summary>
+        /// Using this method, Build Commands will be treated as Stored Procedure
+        /// </summary>
+        public void SetBuildCommandsAsStoredProcedures()
+        {
+            ExecuteBuildCommandsAsStoredProcedure = true;
+        }
 
         /// <summary>
         /// Check if connection is open
@@ -548,7 +567,11 @@ namespace DataConnectorManager
         public int BuildCommand(DatabaseConnectionParameters dbParameters)
         {
             dbParameters.LastCommandSucceeded = false;
-            SetNextCommandAsRawQuery(dbParameters);
+            
+            if (ExecuteBuildCommandsAsStoredProcedure)
+                SetNextCommandAsStoredProcedure(dbParameters);
+            else
+                SetNextCommandAsRawQuery(dbParameters);
 
             int returnValue = -1;
 
