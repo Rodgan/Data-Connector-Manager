@@ -113,7 +113,7 @@ namespace DataConnectorManager
         /// <summary>
         /// If TRUE, Build Commands will be treated as Stored Procedures. If FALSE, Build Commands will be treated as Raw Queries. DEFAULT: False
         /// </summary>
-        public bool ExecuteBuildCommandsAsStoredProcedure = false;
+        public bool ExecuteBuildCommandAsStoredProcedure = false;
 
         /// <summary>
         /// Setup Connection String in DatabaseConnectionParameters
@@ -285,16 +285,16 @@ namespace DataConnectorManager
         /// <summary>
         /// Using this method, Build Commands will be treated as Raw Queries (this is set as default option)
         /// </summary>
-        public void SetBuildCommandsAsRawQueries()
+        public void SetBuildCommandAsRawQuery()
         {
-            ExecuteBuildCommandsAsStoredProcedure = false;
+            ExecuteBuildCommandAsStoredProcedure = false;
         }
         /// <summary>
         /// Using this method, Build Commands will be treated as Stored Procedure
         /// </summary>
-        public void SetBuildCommandsAsStoredProcedures()
+        public void SetBuildCommandAsStoredProcedure()
         {
-            ExecuteBuildCommandsAsStoredProcedure = true;
+            ExecuteBuildCommandAsStoredProcedure = true;
         }
 
         /// <summary>
@@ -568,7 +568,7 @@ namespace DataConnectorManager
         {
             dbParameters.LastCommandSucceeded = false;
             
-            if (ExecuteBuildCommandsAsStoredProcedure)
+            if (ExecuteBuildCommandAsStoredProcedure)
                 SetNextCommandAsStoredProcedure(dbParameters);
             else
                 SetNextCommandAsRawQuery(dbParameters);
