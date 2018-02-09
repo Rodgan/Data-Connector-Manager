@@ -224,5 +224,21 @@ namespace DataConnectorManager
     }
 
     class Access : OleDb { }
-    class Excel : OleDb { }
+    class Excel : OleDb
+    {
+        public static string GetExtendedProperties(string fileName)
+        {
+            string extendedProperties = "";
+
+            if (fileName.EndsWith(".xls"))
+                extendedProperties += "Excel 8.0;";
+            else
+                extendedProperties += "Excel 12.0;";
+
+            extendedProperties += "HDR=YES;";
+            extendedProperties += "IMEX=0";
+
+            return extendedProperties;
+        }
+    }
 }

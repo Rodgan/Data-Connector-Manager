@@ -49,6 +49,7 @@ namespace DataConnectorManager
         public string   FilePath;
         public string   Provider;
         public bool     PersistSecurityInfo;
+        public string   ExtendedProperties;
         #endregion
 
         #region ODBC
