@@ -347,14 +347,26 @@ namespace DataConnectorManager
                     return false;
             }
         }
+
         /// <summary>
         /// Check if connection is open - Only Stored DatabaseConnectionParameters
         /// </summary>
-        /// <param name="dbParameters">Connection Parameters</param>
         /// <returns>Returns TRUE if connection is open</returns>
         public bool IsOpen()
         {
-            return IsOpen(DbStoredParameters);
+            try
+            {
+                if (DbStoredParameters == null)
+                    throw new Exception("No Stored Parameters");
+
+                return IsOpen(DbStoredParameters);
+            }
+            catch(Exception excp)
+            {
+                Logs.AddException(excp);
+                return false;
+            }
+
         }
 
         /// <summary>

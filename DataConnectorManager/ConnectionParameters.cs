@@ -72,14 +72,15 @@ namespace DataConnectorManager
         /// </summary>
         public void ResetParameters()
         {
-            FilePath        = "";
-            Provider        = "";
-            Server          = "";
-            Database        = "";
-            UserId          = "";
-            Password        = "";
-            NetworkLibrary  = "";
-            DSN             = "";
+            FilePath            = "";
+            Provider            = "";
+            Server              = "";
+            Database            = "";
+            UserId              = "";
+            Password            = "";
+            NetworkLibrary      = "";
+            DSN                 = "";
+            ExtendedProperties  = "";
             MultipleActiveResultSets = false;
             TrustedConnection        = false;
             Port = 0;
