@@ -105,7 +105,7 @@ namespace DataConnectorManager
             ExecuteReader(DbStoredParameters);          // SQL (3/3) ACCESS (4/4) MYSQL (2/2) ODBC(2/2) EXCEL(2/2)
             ExecuteNonQuery(DbStoredParameters);        // SQL (3/3) ACCESS (4/4) MYSQL (2/2) ODBC(2/2) EXCEL(2/2)
             ExecuteScalar(DbStoredParameters);          // SQL (3/3) ACCESS (4/4) MYSQL (2/2) ODBC(2/2) EXCEL(2/2)
-
+            DisconnectFromDatabase(DbStoredParameters); // SQL (3/3) ACCESS (4/4) MYSQL (2/2) ODBC(2/2) EXCEL(2/2)
         }
         // REMOVE BEFORE PUBLISH
 
@@ -382,7 +382,7 @@ namespace DataConnectorManager
             return ConnectToDatabase(dbParameters);
         }
         /// <summary>
-        /// Connecto to Database - SetConnectionString() needed
+        /// Connect to Database - SetConnectionString() needed
         /// </summary>
         /// <param name="dbParameters">Parameters</param>
         /// <returns>Returns TRUE if connection succeeds. Returns FALSE if connection fails.</returns>
@@ -428,13 +428,16 @@ namespace DataConnectorManager
 
         }
         /// <summary>
-        /// Connecto to Database using stored Connection Parameters - SetConnectionString() needed. SaveDatabaseConnectionParameters() needed.
+        /// Connect to Database using stored Connection Parameters - SetConnectionString() needed. SaveDatabaseConnectionParameters() needed.
         /// </summary>
         /// <returns>Returns TRUE if connection succeeds. Returns FALSE if connection fails.</returns>
         public bool ConnectToDatabase()
         {
             try
             {
+                if (DbStoredParameters == null)
+                    throw new Exception("No Stored Parameters");
+
                 return ConnectToDatabase(DbStoredParameters);
             }
             catch(Exception excp)
@@ -442,8 +445,73 @@ namespace DataConnectorManager
                 Logs.AddException(excp);
                 return false;
             }
+
         }
 
+        /// <summary>
+        /// Disconnect from Database
+        /// </summary>
+        /// <param name="dbParameters">Connection Parameters</param>
+        /// <returns></returns>
+        public bool DisconnectFromDatabase(DatabaseConnectionParameters dbParameters)
+        {
+            switch (dbParameters.ConnectionType)
+            {
+                case DataConnectionType.SQLServer_StandardSecurity:
+                case DataConnectionType.SQLServer_TrustedConnection:
+                case DataConnectionType.SQLServer_StandardSecurity_UseIpAddressAndPort:
+                    SQLServer.DisconnectFromDatabase(dbParameters);
+                    break;
+
+                case DataConnectionType.Access_ACE_OLEDB12_StandardSecurity:
+                case DataConnectionType.Access_ACE_OLEDB12_WithPassword:
+                case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
+                case DataConnectionType.Access_JET_OLEDB4_WithPassword:
+                    Access.DisconnectFromDatabase(dbParameters);
+                    break;
+
+                case DataConnectionType.MySQL_StandardConnection:
+                case DataConnectionType.MySQL_ServerAndPortConnection:
+                    MySQL.DisconnectFromDatabase(dbParameters);
+                    break;
+
+                case DataConnectionType.ODBC_TrustedConnection:
+                case DataConnectionType.ODBC_StandardLogin:
+                    ODBC.DisconnectFromDatabase(dbParameters);
+                    break;
+
+                case DataConnectionType.Excel_Ace_OLEDB12:
+                case DataConnectionType.Excel_Jet_OLEDB4:
+                    Excel.DisconnectFromDatabase(dbParameters);
+                    break;
+
+                default:
+                    dbParameters.LastCommandSucceeded = false;
+                    break;
+            }
+
+            return dbParameters.LastCommandSucceeded;
+        }
+        /// <summary>
+        /// Disconnect from Database
+        /// </summary>
+        /// <returns></returns>
+        public bool DisconnectFromDatabase()
+        {
+            try
+            {
+                if (DbStoredParameters == null)
+                    throw new Exception("No Stored Parameters");
+
+                return DisconnectFromDatabase(DbStoredParameters);
+            }
+            catch (Exception excp)
+            {
+                Logs.AddException(excp);
+                return false;
+            }
+        }
+        
         /// <summary>
         /// Set QueryParameters in given DatabaseConnectionParameters
         /// </summary>

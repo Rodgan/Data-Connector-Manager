@@ -38,6 +38,27 @@ namespace DataConnectorManager
         }
 
         /// <summary>
+        /// Disconnect from SQL Server
+        /// </summary>
+        /// <param name="dbParameters">Connection Parameters</param>
+        /// <returns></returns>
+        public static bool DisconnectFromDatabase(DatabaseConnectionParameters dbParameters)
+        {
+            try
+            {
+                dbParameters.SQLConnection.Close();
+                dbParameters.LastCommandSucceeded = (dbParameters.SQLConnection.State == ConnectionState.Closed);
+                return dbParameters.LastCommandSucceeded;
+            }
+            catch(Exception excp)
+            {
+                Logs.AddException(excp);
+                dbParameters.LastCommandSucceeded = false;
+                return dbParameters.LastCommandSucceeded;
+            }
+        }
+
+        /// <summary>
         /// Execute query stored in DatabaseConnectionParameters.Query
         /// </summary>
         /// <param name="dbParameters">Connection Parameters</param>
@@ -222,5 +243,6 @@ namespace DataConnectorManager
                 return false;
             }
         }
+
     }
 }
