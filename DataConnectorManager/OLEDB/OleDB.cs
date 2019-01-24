@@ -247,7 +247,7 @@ namespace DataConnectorManager
     class Access : OleDb { }
     class Excel : OleDb
     {
-        public static string GetExtendedProperties(string fileName)
+        public static string GetExtendedProperties(string fileName, bool IMEX)
         {
             string extendedProperties = "";
 
@@ -257,7 +257,7 @@ namespace DataConnectorManager
                 extendedProperties += "Excel 12.0;";
 
             extendedProperties += "HDR=YES;";
-            extendedProperties += "IMEX=0";
+            extendedProperties += "IMEX=" + (IMEX ? 1 : 0);
 
             return extendedProperties;
         }

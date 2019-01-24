@@ -46,8 +46,10 @@ namespace DataConnectorManager
         Access_JET_OLEDB4_WithPassword,
 
         Excel_Ace_OLEDB12,
+        Excel_Ace_OLEDB12_With_IMEX,
 
         Excel_Jet_OLEDB4,
+        Excel_Jet_OLEDB4_With_IMEX,
 
         /// <summary>
         /// Standard Connection to MySQL. Parameters to be set: Server, Database, UserId, Password
@@ -154,9 +156,9 @@ namespace DataConnectorManager
                     connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};Jet OLEDB:Database Password={dbParameters.Password};";
                     break;
                 case DataConnectionType.Access_JET_OLEDB4_StandardSecurity:
-                    dbParameters.Provider   = "Microsoft.Jet.OLEDB.4.0";
-                    dbParameters.UserId     = "admin";
-                    dbParameters.Password   = "";
+                    dbParameters.Provider = "Microsoft.Jet.OLEDB.4.0";
+                    dbParameters.UserId = "admin";
+                    dbParameters.Password = "";
                     connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};User Id={dbParameters.UserId};Password={dbParameters.Password};";
                     break;
                 case DataConnectionType.Access_JET_OLEDB4_WithPassword:
@@ -177,12 +179,22 @@ namespace DataConnectorManager
                     break;
                 case DataConnectionType.Excel_Ace_OLEDB12:
                     dbParameters.Provider = "Microsoft.ACE.OLEDB.12.0";
-                    dbParameters.ExtendedProperties = Excel.GetExtendedProperties(dbParameters.FilePath);
+                    dbParameters.ExtendedProperties = Excel.GetExtendedProperties(dbParameters.FilePath, false);
+                    connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};Extended Properties=\"{dbParameters.ExtendedProperties}\";";
+                    break;
+                case DataConnectionType.Excel_Ace_OLEDB12_With_IMEX:
+                    dbParameters.Provider = "Microsoft.ACE.OLEDB.12.0";
+                    dbParameters.ExtendedProperties = Excel.GetExtendedProperties(dbParameters.FilePath, true);
                     connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};Extended Properties=\"{dbParameters.ExtendedProperties}\";";
                     break;
                 case DataConnectionType.Excel_Jet_OLEDB4:
                     dbParameters.Provider = "Microsoft.Jet.OLEDB.4.0";
-                    dbParameters.ExtendedProperties = Excel.GetExtendedProperties(dbParameters.FilePath);
+                    dbParameters.ExtendedProperties = Excel.GetExtendedProperties(dbParameters.FilePath, false);
+                    connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};Extended Properties=\"{dbParameters.ExtendedProperties}\";";
+                    break;
+                case DataConnectionType.Excel_Jet_OLEDB4_With_IMEX:
+                    dbParameters.Provider = "Microsoft.Jet.OLEDB.4.0";
+                    dbParameters.ExtendedProperties = Excel.GetExtendedProperties(dbParameters.FilePath, true);
                     connectionString = $"Provider={dbParameters.Provider};Data Source={dbParameters.FilePath};Extended Properties=\"{dbParameters.ExtendedProperties}\";";
                     break;
                 default:
@@ -207,7 +219,7 @@ namespace DataConnectorManager
         {
             return SetConnectionString(DbStoredParameters, dbConnectionType, saveDatabaseConnectionParameters);
         }
-        
+
         /// <summary>
         /// Allows user to store DatabaseConnectionParameters in DataConnector instance
         /// </summary>
@@ -339,6 +351,8 @@ namespace DataConnectorManager
                 case DataConnectionType.ODBC_StandardLogin:
                     return ODBC.IsOpen(dbParameters);
 
+                case DataConnectionType.Excel_Jet_OLEDB4_With_IMEX:
+                case DataConnectionType.Excel_Ace_OLEDB12_With_IMEX:
                 case DataConnectionType.Excel_Ace_OLEDB12:
                 case DataConnectionType.Excel_Jet_OLEDB4:
                     return Excel.IsOpen(dbParameters);
@@ -361,7 +375,7 @@ namespace DataConnectorManager
 
                 return IsOpen(DbStoredParameters);
             }
-            catch(Exception excp)
+            catch (Exception excp)
             {
                 Logs.AddException(excp);
                 return false;
@@ -414,11 +428,13 @@ namespace DataConnectorManager
                     ODBC.ConnectToDatabase(dbParameters);
                     break;
 
+                case DataConnectionType.Excel_Jet_OLEDB4_With_IMEX:
+                case DataConnectionType.Excel_Ace_OLEDB12_With_IMEX:
                 case DataConnectionType.Excel_Ace_OLEDB12:
                 case DataConnectionType.Excel_Jet_OLEDB4:
                     Excel.ConnectToDatabase(dbParameters);
                     break;
-                
+
                 default:
                     dbParameters.LastCommandSucceeded = false;
                     break;
@@ -440,7 +456,7 @@ namespace DataConnectorManager
 
                 return ConnectToDatabase(DbStoredParameters);
             }
-            catch(Exception excp)
+            catch (Exception excp)
             {
                 Logs.AddException(excp);
                 return false;
@@ -480,6 +496,8 @@ namespace DataConnectorManager
                     ODBC.DisconnectFromDatabase(dbParameters);
                     break;
 
+                case DataConnectionType.Excel_Jet_OLEDB4_With_IMEX:
+                case DataConnectionType.Excel_Ace_OLEDB12_With_IMEX:
                 case DataConnectionType.Excel_Ace_OLEDB12:
                 case DataConnectionType.Excel_Jet_OLEDB4:
                     Excel.DisconnectFromDatabase(dbParameters);
@@ -511,7 +529,7 @@ namespace DataConnectorManager
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Set QueryParameters in given DatabaseConnectionParameters
         /// </summary>
@@ -588,8 +606,8 @@ namespace DataConnectorManager
         /// <param name="dataSetContainer">DataSet</param>
         public void SetDataContainer(DatabaseConnectionParameters dbParameters, DataSet dataSetContainer)
         {
-            dbParameters.DataContainerType  = DataContainerType.DataSet;
-            dbParameters.DataSetContainer   = dataSetContainer;
+            dbParameters.DataContainerType = DataContainerType.DataSet;
+            dbParameters.DataSetContainer = dataSetContainer;
         }
         /// <summary>
         /// Set a DataSet as a container for built queries
@@ -608,8 +626,8 @@ namespace DataConnectorManager
         /// <param name="dataTableName">DataTable Name</param>
         public void SetDataContainer(DatabaseConnectionParameters dbParameters, DataSet dataSetContainer, string dataTableName)
         {
-            dbParameters.DataContainerType      = DataContainerType.DataSetWithTable;
-            dbParameters.DataSetContainer       = dataSetContainer;
+            dbParameters.DataContainerType = DataContainerType.DataSetWithTable;
+            dbParameters.DataSetContainer = dataSetContainer;
             dbParameters.DataTableContainerName = dataTableName;
         }
         /// <summary>
@@ -670,7 +688,7 @@ namespace DataConnectorManager
         public int BuildCommand(DatabaseConnectionParameters dbParameters)
         {
             dbParameters.LastCommandSucceeded = false;
-            
+
             if (ExecuteBuildCommandAsStoredProcedure)
                 SetNextCommandAsStoredProcedure(dbParameters);
             else
@@ -703,6 +721,8 @@ namespace DataConnectorManager
                     returnValue = ODBC.BuildCommand(dbParameters);
                     break;
 
+                case DataConnectionType.Excel_Jet_OLEDB4_With_IMEX:
+                case DataConnectionType.Excel_Ace_OLEDB12_With_IMEX:
                 case DataConnectionType.Excel_Ace_OLEDB12:
                 case DataConnectionType.Excel_Jet_OLEDB4:
                     returnValue = Excel.BuildCommand(dbParameters);
@@ -772,6 +792,8 @@ namespace DataConnectorManager
                     returnValue = ODBC.ExecuteReader(dbParameters);
                     break;
 
+                case DataConnectionType.Excel_Jet_OLEDB4_With_IMEX:
+                case DataConnectionType.Excel_Ace_OLEDB12_With_IMEX:
                 case DataConnectionType.Excel_Ace_OLEDB12:
                 case DataConnectionType.Excel_Jet_OLEDB4:
                     returnValue = Excel.ExecuteReader(dbParameters);
@@ -843,6 +865,8 @@ namespace DataConnectorManager
                     returnValue = ODBC.ExecuteNonQuery(dbParameters);
                     break;
 
+                case DataConnectionType.Excel_Jet_OLEDB4_With_IMEX:
+                case DataConnectionType.Excel_Ace_OLEDB12_With_IMEX:
                 case DataConnectionType.Excel_Ace_OLEDB12:
                 case DataConnectionType.Excel_Jet_OLEDB4:
                     returnValue = Excel.ExecuteNonQuery(dbParameters);
@@ -914,6 +938,8 @@ namespace DataConnectorManager
                     returnValue = ODBC.ExecuteScalar(dbParameters);
                     break;
 
+                case DataConnectionType.Excel_Jet_OLEDB4_With_IMEX:
+                case DataConnectionType.Excel_Ace_OLEDB12_With_IMEX:
                 case DataConnectionType.Excel_Ace_OLEDB12:
                 case DataConnectionType.Excel_Jet_OLEDB4:
                     returnValue = Excel.ExecuteScalar(dbParameters);
